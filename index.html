@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kontaktmotorn</title>
+<meta name="description" content="Steg för steg: hur Lisas animationer i Ombra Podcast får rätt kontakt med fåtöljen. Från Unreal till Blender och tillbaka, med mätningar.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kontaktmotorn">
+<meta property="og:description" content="Händer som vilar på armstöden, fingrar som följer kanten och inga ryck. Så fungerar Ombra Podcasts kontaktmotor, steg för steg.">
+<meta property="og:image" content="http://ombraprime.com/kontaktmotorn/hero.jpg">
+<meta property="og:url" content="http://ombraprime.com/kontaktmotorn/">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: en spalt som läses uppifrån och ned som kedjan; varje steg märkt med var det körs (Unreal blå, Blender orange); fåtöljens sammet är accenten för kontakt */
+:root {
+  --bg: #eceff2;
+  --panel: #ffffff;
+  --ink: #1a1f25;
+  --muted: #5a6470;
+  --line: #d2d8de;
+  --velvet: #8f1d31;
+  --velvet-soft: #8f1d3120;
+  --ue: #2a5d8f;
+  --ue-soft: #2a5d8f18;
+  --bl: #b95a14;
+  --bl-soft: #b95a141c;
+  --ok: #2e7a4b;
+  --code-bg: #f4f6f8;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #13161a; --panel: #1c2026; --ink: #e6e9ed; --muted: #9ba5b0; --line: #2d333b;
+    --velvet: #e0677c; --velvet-soft: #e0677c26; --ue: #73a6d9; --ue-soft: #73a6d91f; --bl: #f0914b; --bl-soft: #f0914b22;
+    --ok: #62c286; --code-bg: #161a1f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #13161a; --panel: #1c2026; --ink: #e6e9ed; --muted: #9ba5b0; --line: #2d333b;
+  --velvet: #e0677c; --velvet-soft: #e0677c26; --ue: #73a6d9; --ue-soft: #73a6d91f; --bl: #f0914b; --bl-soft: #f0914b22;
+  --ok: #62c286; --code-bg: #161a1f; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+img { max-width: 100%; height: auto; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; display: grid; gap: 64px; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.6rem, 6vw, 4.2rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.6rem, 3.2vw, 2.1rem); font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lead { font-size: 1.18rem; color: var(--ink); max-width: 60ch; }
+.sub { color: var(--muted); }
+code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+section { display: grid; gap: 20px; }
+.sec-head { display: grid; gap: 8px; }
+
+/* hero */
+.hero { display: grid; gap: 22px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--font-mono); font-size: 0.78rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: var(--panel); }
+.chip.v { border-color: var(--velvet); color: var(--velvet); }
+figure { margin: 0; display: grid; gap: 8px; }
+figure img { width: 100%; border-radius: 6px; display: block; }
+figcaption { font-size: 0.86rem; color: var(--muted); }
+
+/* var det körs */
+.tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; padding: 2px 8px; border-radius: 4px; }
+.tag.ue { color: var(--ue); background: var(--ue-soft); }
+.tag.bl { color: var(--bl); background: var(--bl-soft); }
+
+/* kedjan */
+.lanes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.lane { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 12px; border-top: 4px solid var(--c); }
+.lane.ue { --c: var(--ue); } .lane.bl { --c: var(--bl); }
+.lane ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.lane li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 8px; align-items: start; }
+.num { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500; color: var(--c); border: 1.5px solid var(--c); border-radius: 50%; width: 26px; height: 26px; display: grid; place-items: center; font-variant-numeric: tabular-nums; }
+.lane li b { display: block; font-weight: 600; }
+.lane li span { font-size: 0.88rem; color: var(--muted); }
+.arrow-note { font-size: 0.9rem; color: var(--muted); }
+
+/* varför Blender */
+.three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.verdict { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 8px; align-content: start; }
+.verdict .res { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500; }
+.verdict .res.no { color: var(--velvet); } .verdict .res.yes { color: var(--ok); }
+.verdict.pick { border-color: var(--ok); }
+
+/* bron */
+.bridge { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.fact { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+.big { font-family: var(--font-display); font-weight: 700; font-size: 2rem; line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* passen */
+.passes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.pass { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; align-items: start; }
+.pass svg { width: 100%; height: auto; display: block; }
+.pass .txt { display: grid; gap: 6px; min-width: 0; }
+.pass .pn { font-family: var(--font-mono); font-size: 0.78rem; color: var(--bl); font-weight: 500; }
+.pass .rule { font-family: var(--font-mono); font-size: 0.8rem; color: var(--velvet); }
+.pass .new { font-family: var(--font-mono); font-size: 0.72rem; color: var(--bl); border: 1px solid var(--bl); border-radius: 4px; padding: 0 6px; margin-left: 6px; vertical-align: 2px; }
+svg .chair { fill: var(--velvet-soft); stroke: var(--velvet); stroke-width: 2; }
+svg .body { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+svg .bodyfill { fill: var(--panel); stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+svg .ghost { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 4 4; }
+svg .act { fill: none; stroke: var(--bl); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+svg .actfill { fill: var(--bl); }
+svg .floor { stroke: var(--muted); stroke-width: 1.6; }
+svg .lbl { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+svg .lbl-a { fill: var(--bl); font-family: var(--font-mono); font-size: 11px; }
+svg .hot { fill: var(--velvet); }
+
+/* mätningar */
+.chart-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 10px; }
+.scroll-x { overflow-x: auto; }
+.scroll-x svg { min-width: 520px; width: 100%; height: auto; display: block; }
+svg .grid { stroke: var(--line); stroke-width: 1; }
+svg .axis { fill: var(--muted); font-family: var(--font-mono); font-size: 13px; }
+svg .l-mocap { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 5 4; }
+svg .l-v10 { fill: none; stroke: var(--velvet); stroke-width: 2; }
+svg .l-v11 { fill: none; stroke: var(--ue); stroke-width: 2.6; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.86rem; color: var(--muted); }
+.legend i { display: inline-block; width: 22px; height: 0; border-top: 3px solid var(--c); vertical-align: middle; margin-right: 6px; }
+.legend i.dash { border-top-style: dashed; }
+.bars { display: grid; gap: 10px; }
+.bar-row { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; align-items: center; font-size: 0.9rem; }
+.bar-pair { display: grid; gap: 4px; }
+.bar { height: 16px; border-radius: 3px; background: var(--c); min-width: 2px; position: relative; }
+.bar-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 72px; gap: 8px; align-items: center; }
+.bar-val { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.table-box { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.92rem; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.best { color: var(--ok); font-weight: 600; }
+
+/* steg för nytt klipp */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; counter-reset: s; }
+.step { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 10px; min-width: 0; }
+.wrap > *, .step > *, .code, .lane li > div, .verdict, .fact, .item, .chart-box > *, section > * { min-width: 0; }
+.step-h { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.step-h .num { --c: var(--ink); }
+.code { position: relative; background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px; }
+.code pre { margin: 0; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.55; }
+.copy { position: absolute; top: 6px; right: 6px; font-family: var(--font-mono); font-size: 0.72rem; background: var(--panel); color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 2px 8px; cursor: pointer; }
+.copy:hover { color: var(--ink); }
+.copy:focus-visible, a:focus-visible { outline: 2px solid var(--ue); outline-offset: 2px; }
+.say { border-left: 3px solid var(--velvet); padding: 10px 14px; background: var(--panel); border-radius: 0 8px 8px 0; }
+
+/* fällor och kvar */
+.list2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.item { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.item b { font-weight: 600; }
+.item span { font-size: 0.9rem; color: var(--muted); }
+.files td:first-child { font-family: var(--font-mono); font-size: 0.82rem; word-break: break-all; }
+footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--line); padding-top: 18px; }
+
+@media (max-width: 820px) {
+  .lanes, .three, .passes, .list2, .bridge { grid-template-columns: minmax(0, 1fr); }
+  .pass { grid-template-columns: 120px minmax(0, 1fr); }
+}
+@media (max-width: 460px) {
+  .pass { grid-template-columns: minmax(0, 1fr); }
+  .pass svg { max-width: 220px; }
+  .bar-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .l-v11 { stroke-dasharray: 2400; stroke-dashoffset: 2400; animation: rita 2.2s ease-out 0.3s forwards; }
+  @keyframes rita { to { stroke-dashoffset: 0; } }
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Ombra Podcast · animation · skill "kontaktmotor"</div>
+  <h1>Kontaktmotorn</h1>
+  <p class="lead">Mocapen vet inget om fåtöljen. Kontaktmotorn rättar varje bildruta så att rumpan vilar på sitsen, händerna ligger på armstöden, fingrarna följer kanten och fötterna står på golvet. Den gör det av sig själv, utan handarbete.</p>
+  <div class="chips">
+    <span class="chip v">Version 11</span>
+    <span class="chip">3 oktober 2026</span>
+    <span class="chip">Testad på AIScen_1: Lisa i SM_Fatolj_Lisa</span>
+  </div>
+  <figure>
+    <img src="hero.jpg" width="1120" height="660" alt="Lisa sitter i den röda fåtöljen med båda händerna vilande på armstöden och fingrarna över kanten">
+    <figcaption>Version 11, bildruta 200, renderad i Unreal. Handflatorna ligger 0,2–0,5 cm över armstöden och fingrarna följer kanten.</figcaption>
+  </figure>
+</header>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Översikt</div>
+    <h2>Hela vägen, från klipp till färdig animation</h2>
+    <p class="sub">Unreal visar hur Lisa ser ut och var fåtöljen står. Blender räknar ut kontakten. Sedan går svaret tillbaka till Unreal som en ny animation. Färgen visar var varje steg körs.</p>
+  </div>
+  <div class="lanes">
+    <div class="lane ue">
+      <span class="tag ue">Unreal · före</span>
+      <ol>
+        <li><span class="num">1</span><div><b>Klippet</b><span>Mocapen finns som <code>AS_Body_&lt;klipp&gt;</code>.</span></div></li>
+        <li><span class="num">2</span><div><b>Placera i fåtöljen</b><span>Var hennes kropp ska stå när hon sitter (<code>pod_place</code>).</span></div></li>
+        <li><span class="num">3</span><div><b>Exportera scenen</b><span>Kroppen, fåtöljen och golvet, i rätt läge (<code>pod_kontakt_export</code>).</span></div></li>
+        <li><span class="num">4</span><div><b>Spela in sanningen</b><span>Alla 341 ben i varje bildruta, så som Unreal visar dem (<code>pod_truth</code>).</span></div></li>
+      </ol>
+    </div>
+    <div class="lane bl">
+      <span class="tag bl">Blender</span>
+      <ol>
+        <li><span class="num">5</span><div><b>Bygg scenen</b><span>Lisa med kläder och fåtöljen (<code>bygg_scen</code>).</span></div></li>
+        <li><span class="num">6</span><div><b>Bron in</b><span>Exakt samma pose som i Unreal (<code>UE_sanning</code>).</span></div></li>
+        <li><span class="num">7</span><div><b>Kontaktmotorn</b><span>Sex pass, se nedan. Cirka 2,5 minuter per klipp.</span></div></li>
+        <li><span class="num">8</span><div><b>Mät</b><span>Intryck, glipor, glidning och fingrarnas ryck.</span></div></li>
+        <li><span class="num">9</span><div><b>Bron ut</b><span>Bara de ändrade benen, i Unreals koordinater (<code>till_ue</code>).</span></div></li>
+      </ol>
+    </div>
+    <div class="lane ue">
+      <span class="tag ue">Unreal · efter</span>
+      <ol>
+        <li><span class="num">10</span><div><b>Baka</b><span>Ny animation <code>AS_Body_&lt;klipp&gt;_kontaktN</code> (<code>pod_kontakt_bake</code>).</span></div></li>
+        <li><span class="num">11</span><div><b>Närbild</b><span>Sekvens med kamera mot fåtöljen, renderas i 720p.</span></div></li>
+        <li><span class="num">12</span><div><b>Jämförelsefilm</b><span>Före och efter sida vid sida, händerna inzoomade.</span></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Beslutet</div>
+    <h2>Varför räkningen görs i Blender</h2>
+    <p class="sub">Vi provade tre vägar den 3 oktober.</p>
+  </div>
+  <div class="three">
+    <div class="verdict">
+      <span class="tag ue">Unreal-fysik</span>
+      <h3>Aktiv ragdoll</h3>
+      <p class="sub">Med löst inställda leder föll armarna ner på låren. Med styva leder svävade händerna cirka 2,5 cm, handlederna slets upp och fingrarna saknade fysikkroppar.</p>
+      <span class="res no">Förkastad</span>
+    </div>
+    <div class="verdict">
+      <span class="tag" style="color:var(--muted);background:var(--bg)">Cascadeur Indie</span>
+      <h3>AutoPhysics och FixFoot</h3>
+      <p class="sub">Fysiken räknar bara golvet som stöd, inte fåtöljen. När händerna låstes sjönk kroppen 20–30 cm ner i fåtöljen. Kontakt med omgivningen kräver Pro.</p>
+      <span class="res no">Bara för finputs</span>
+    </div>
+    <div class="verdict pick">
+      <span class="tag bl">Blender</span>
+      <h3>Egen kontaktmotor</h3>
+      <p class="sub">Mäter mot riktiga vertexar, både hud och kläder, och fåtöljens exakta geometri. Varje rättning är mätbar och kan köras om på nytt klipp.</p>
+      <span class="res yes">Vald</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Bron</div>
+    <h2>Blender ser exakt det Unreal visar</h2>
+    <p class="sub">Unreal spelar animationen med Lisas egna benlängder och lägger höften 7,06 cm högre än i mocapen. Vägen via FBX gav i stället mocap-skelettets längder, och då hamnade händerna 2–4 cm fel. Därför spelar vi in vad Unreal faktiskt visar och bygger Blenders pose ur det.</p>
+  </div>
+  <div class="bridge">
+    <div class="fact"><span class="big">341 × 241</span><span>ben × bildrutor spelas in medan Unreal spelar klippet, i komponentrum.</span></div>
+    <div class="fact"><span class="big">0,16 mm</span><span>fel efter hela rundan Unreal → Blender → Unreal. FBX-vägen gav 2–4 cm.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Motorn</div>
+    <h2>Sex pass, i den här ordningen</h2>
+    <p class="sub">Varje pass mäter först, ändrar sedan bara det som behövs och går mjukt in och ut, så att inget hoppar.</p>
+  </div>
+  <div class="passes">
+
+    <div class="pass">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <line class="floor" x1="6" y1="110" x2="154" y2="110"/>
+        <path class="chair" d="M58 78 h80 v14 h-80 z M128 22 h12 v70 h-12 z M62 92 v18 M134 92 v18"/>
+        <path class="ghost" d="M64 84 q20 -10 52 -4 l0 12 q-30 4 -52 2 z"/>
+        <path class="bodyfill" d="M64 66 q22 -10 54 -4 l0 12 q-30 4 -54 2 z"/>
+        <path class="body" d="M66 72 L40 76 L34 108"/>
+        <path class="act" d="M96 96 v-16"/><path class="actfill" d="M91 82 l5 -8 l5 8 z"/>
+        <text class="lbl" x="6" y="18">rumpa</text><text class="lbl" x="6" y="30">på sitsen</text>
+      </svg>
+      <div class="txt">
+        <span class="pn">Pass 1</span>
+        <h3>Kropp</h3>
+        <p>Höften flyttas upp eller ner så att huden vilar på sitsen. Tyget får tryckas ihop. När hon står flyttas höften så att fötterna når golvet. Benen följer med IK. Passet körs två varv.</p>
+        <span class="rule">högst 0,5 cm in i sitsen</span>
+      </div>
+    </div>
+
+    <div class="pass">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <rect class="chair" x="14" y="62" width="112" height="44" rx="16"/>
+        <path class="bodyfill" d="M22 52 h78 q8 0 10 6 l2 4 h-90 z"/>
+        <path class="body" d="M108 58 q16 2 22 20 q2 8 -2 14"/>
+        <path class="act" d="M30 40 q-10 8 0 16"/><path class="act" d="M96 40 q10 8 0 16"/>
+        <text class="lbl-a" x="40" y="34">0,2 cm luft</text>
+      </svg>
+      <div class="txt">
+        <span class="pn">Pass 2</span>
+        <h3>Händer</h3>
+        <p>Handflatan läggs mot armstödet. Motorn provar olika vinklar runt handleden och väljer den där handflatan vilar och knogarna inte trycker för hårt. Armen räknas fram med IK. Kontakten slås på och av med fördröjning, så att den inte fladdrar.</p>
+        <span class="rule">luft 0,2 cm · lutning ±20° · rull ±12° · knogar högst 0,7 cm in</span>
+      </div>
+    </div>
+
+    <div class="pass">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <line class="floor" x1="8" y1="104" x2="152" y2="104"/>
+        <path class="ghost" d="M10 70 q10 -8 18 -2 t18 2 t18 -6 t18 8 t18 -4 t18 6 t18 -2 t16 -4"/>
+        <path class="act" d="M10 66 h46 c14 0 16 14 30 14 h64"/>
+        <text class="lbl" x="10" y="56">viloläge 1</text><text class="lbl" x="96" y="96">viloläge 2</text>
+        <text class="lbl-a" x="56" y="42">glider</text>
+        <text class="lbl" x="10" y="116">bildrutor →</text>
+      </svg>
+      <div class="txt">
+        <span class="pn">Pass 3</span>
+        <h3>Lås mot glidning <span class="new">nytt i v11</span></h3>
+        <p>En hand som vilar och en fot som står låses fast i läge och vinkel. Mocapen glider annars några centimeter. Två vilolägen tätt efter varandra binds ihop: handen glider mjukt till nästa läge i stället för att släppas tillbaka mot mocapen.</p>
+        <span class="rule">vila: under 0,8 cm/bildruta · inom 2,5 cm (hand), 2 cm (fot)</span>
+      </div>
+    </div>
+
+    <div class="pass">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <rect class="chair" x="40" y="88" width="112" height="22" rx="10"/>
+        <circle class="hot" cx="20" cy="24" r="4"/><circle class="hot" cx="134" cy="76" r="4"/>
+        <line class="ghost" x1="20" y1="24" x2="134" y2="76"/>
+        <path class="body" d="M20 24 L60 30 L134 76"/>
+        <path class="act" d="M20 24 L66 70 L134 76"/>
+        <path class="act" d="M70 34 q14 14 0 30" stroke-dasharray="3 4"/>
+        <text class="lbl" x="4" y="14">axel</text><text class="lbl" x="118" y="66">handled</text>
+      </svg>
+      <div class="txt">
+        <span class="pn">Pass 4</span>
+        <h3>Underarm</h3>
+        <p>Armbågen vrids runt linjen mellan axel och handled så att underarmen vilar på armstödet. Den vrids bara om underarmen faktiskt når ner, annars blir det en konstig armbåge.</p>
+        <span class="rule">högst ±30° · bara när handen vilar</span>
+      </div>
+    </div>
+
+    <div class="pass">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <path class="chair" d="M8 60 h98 q22 0 22 22 v28 h-120 z"/>
+        <path class="bodyfill" d="M10 46 h70 q6 0 8 6 l0 4 h-78 z"/>
+        <path class="ghost" d="M86 52 l28 -4 l22 -2"/>
+        <path class="body" d="M86 54 q18 0 26 6"/><path class="body" d="M112 60 q14 8 16 22"/><path class="body" d="M128 82 q2 10 -2 18"/>
+        <circle class="actfill" cx="86" cy="54" r="3"/><circle class="actfill" cx="112" cy="60" r="3"/><circle class="actfill" cx="128" cy="82" r="3"/>
+        <text class="lbl-a" x="40" y="34">led för led</text>
+      </svg>
+      <div class="txt">
+        <span class="pn">Pass 5</span>
+        <h3>Fingrar <span class="new">nytt i v11</span></h3>
+        <p>Fingrarna böjs led för led, från knogen ut till toppen, så att de ligger an mot ytan eller följer kanten. Vinkeln väljs över hela klippet på en gång, och varje ändring mellan bildrutor kostar. Därför tar motorn den lugnaste vägen i stället för att hoppa.</p>
+        <span class="rule">högst 5° per bildruta · drar mot ytan bara när handen vilar · tummen dras aldrig</span>
+      </div>
+    </div>
+
+    <div class="pass">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <line class="floor" x1="8" y1="92" x2="152" y2="92"/>
+        <path class="act" d="M10 92 L40 92 L58 52 L102 52 L120 92 L150 92"/>
+        <line class="grid" x1="80" y1="44" x2="80" y2="98" stroke-dasharray="3 3"/>
+        <circle class="hot" cx="80" cy="52" r="4"/>
+        <text class="lbl" x="62" y="112">±3 bildrutor</text>
+        <text class="lbl-a" x="54" y="40">rättning</text>
+      </svg>
+      <div class="txt">
+        <span class="pn">Pass 6</span>
+        <h3>Säkerhet för fingertoppar</h3>
+        <p>Till sist kontrolleras varje vertex i fingrarna. Där en topp fortfarande går in böjs fingret minsta möjliga. Rättningen sprids över bildrutorna runt omkring, så att den inte syns som ett ryck.</p>
+        <span class="rule">tillåtet: knoge 0,7 cm, topp 0,3 cm in</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Mätningar</div>
+    <h2>Så vet vi att det blev bättre</h2>
+    <p class="sub">Allt mäts i Blender innan Unreal ser något. Diagrammet nedan är riktiga värden ur klippet.</p>
+  </div>
+
+  <div class="chart-box">
+    <h3>Pekfingrets första led, vänster hand</h3>
+    <p class="sub">Böjvinkel i grader, bildruta 60–200. Handen landar på armstödet kring bildruta 70 och vilar sedan.</p>
+    <div class="legend">
+      <span style="--c:var(--muted)"><i class="dash"></i>Mocapen</span>
+      <span style="--c:var(--velvet)"><i></i>Version 10: 17 hopp, upp till 95°</span>
+      <span style="--c:var(--ue)"><i></i>Version 11: inga hopp</span>
+    </div>
+    <div class="scroll-x">
+      <svg viewBox="0 0 600 260" role="img" aria-label="Linjediagram: version 10 hoppar mellan 5 och 95 grader, version 11 följer en lugn kurva under 47 grader, mocapen ligger mellan 5 och 18 grader">
+        <line class="grid" x1="52" y1="20" x2="584" y2="20"/><line class="grid" x1="52" y1="70" x2="584" y2="70"/>
+        <line class="grid" x1="52" y1="120" x2="584" y2="120"/><line class="grid" x1="52" y1="170" x2="584" y2="170"/>
+        <line class="grid" x1="52" y1="220" x2="584" y2="220"/>
+        <text class="axis" x="44" y="24" text-anchor="end">100°</text><text class="axis" x="44" y="74" text-anchor="end">75°</text>
+        <text class="axis" x="44" y="124" text-anchor="end">50°</text><text class="axis" x="44" y="174" text-anchor="end">25°</text>
+        <text class="axis" x="44" y="224" text-anchor="end">0°</text>
+        <text class="axis" x="52" y="244" text-anchor="middle">60</text><text class="axis" x="128" y="244" text-anchor="middle">80</text>
+        <text class="axis" x="204" y="244" text-anchor="middle">100</text><text class="axis" x="280" y="244" text-anchor="middle">120</text>
+        <text class="axis" x="356" y="244" text-anchor="middle">140</text><text class="axis" x="432" y="244" text-anchor="middle">160</text>
+        <text class="axis" x="508" y="244" text-anchor="middle">180</text><text class="axis" x="584" y="244" text-anchor="middle">200</text>
+        <polyline class="l-mocap" points="52.0,184.9 55.8,185.9 59.6,187.3 63.4,188.5 67.2,190.0 71.0,193.1 74.8,198.6 78.6,205.0 82.4,206.9 86.2,204.8 90.0,202.7 93.8,200.9 97.6,199.1 101.4,197.8 105.2,197.1 109.0,197.4 112.8,197.8 116.6,198.7 120.4,199.6 124.2,200.0 128.0,200.4 131.8,200.9 135.6,201.7 139.4,202.5 143.2,203.0 147.0,203.5 150.8,204.0 154.6,204.5 158.4,205.3 162.2,206.1 166.0,206.7 169.8,207.4 173.6,208.0 177.4,208.4 181.2,208.9 185.0,209.3 188.8,209.6 192.6,209.7 196.4,209.7 200.2,209.6 204.0,209.4 207.8,209.2 211.6,209.0 215.4,208.6 219.2,208.4 223.0,208.0 226.8,207.6 230.6,207.4 234.4,207.3 238.2,207.3 242.0,207.4 245.8,207.4 249.6,207.6 253.4,207.8 257.2,207.9 261.0,208.2 264.8,208.3 268.6,208.5 272.4,208.7 276.2,208.8 280.0,208.8 283.8,208.7 287.6,208.7 291.4,208.6 295.2,208.5 299.0,208.4 302.8,208.2 306.6,208.1 310.4,208.1 314.2,208.1 318.0,208.3 321.8,208.4 325.6,208.6 329.4,208.8 333.2,208.9 337.0,208.9 340.8,208.9 344.6,208.8 348.4,208.7 352.2,208.5 356.0,208.3 359.8,208.2 363.6,208.0 367.4,207.7 371.2,207.4 375.0,207.3 378.8,207.1 382.6,207.0 386.4,206.9 390.2,206.8 394.0,206.8 397.8,206.8 401.6,206.7 405.4,206.6 409.2,206.6 413.0,206.4 416.8,206.3 420.6,206.2 424.4,206.1 428.2,206.1 432.0,206.0 435.8,206.0 439.6,206.0 443.4,206.1 447.2,206.1 451.0,206.2 454.8,206.3 458.6,206.4 462.4,206.5 466.2,206.6 470.0,206.6 473.8,206.7 477.6,206.8 481.4,206.8 485.2,206.9 489.0,206.9 492.8,206.8 496.6,206.8 500.4,206.8 504.2,206.7 508.0,206.7 511.8,206.6 515.6,206.5 519.4,206.4 523.2,206.4 527.0,206.4 530.8,206.4 534.6,206.5 538.4,206.5 542.2,206.5 546.0,206.5 549.8,206.5 553.6,206.4 557.4,206.1 561.2,206.0 565.0,205.8 568.8,205.8 572.6,205.6 576.4,205.6 580.2,205.5 584.0,205.5"/>
+        <polyline class="l-v10" points="52.0,184.9 55.8,185.9 59.6,187.3 63.4,188.5 67.2,192.7 71.0,196.9 74.8,201.6 78.6,205.5 82.4,203.9 86.2,203.4 90.0,202.7 93.8,200.9 97.6,199.1 101.4,197.8 105.2,195.3 109.0,187.9 112.8,176.6 116.6,173.6 120.4,159.5 124.2,178.6 128.0,188.8 131.8,202.8 135.6,209.0 139.4,209.8 143.2,208.6 147.0,207.3 150.8,209.6 154.6,208.3 158.4,209.0 162.2,209.7 166.0,210.2 169.8,207.4 173.6,208.0 177.4,208.4 181.2,208.9 185.0,209.3 188.8,209.6 192.6,209.7 196.4,209.7 200.2,209.6 204.0,209.4 207.8,209.2 211.6,209.0 215.4,208.6 219.2,208.4 223.0,208.0 226.8,207.6 230.6,200.2 234.4,195.1 238.2,193.2 242.0,194.9 245.8,196.7 249.6,207.2 253.4,202.3 257.2,190.1 261.0,180.2 264.8,155.4 268.6,154.8 272.4,157.2 276.2,156.4 280.0,155.8 283.8,154.9 287.6,154.3 291.4,153.7 295.2,153.2 299.0,152.7 302.8,152.3 306.6,146.1 310.4,159.8 314.2,75.4 318.0,31.2 321.8,42.0 325.6,41.8 329.4,41.4 333.2,41.0 337.0,40.8 340.8,40.5 344.6,40.3 348.4,40.2 352.2,40.0 356.0,29.0 359.8,72.9 363.6,161.9 367.4,148.0 371.2,153.8 375.0,153.8 378.8,153.5 382.6,153.4 386.4,153.3 390.2,153.2 394.0,153.2 397.8,153.1 401.6,153.1 405.4,152.9 409.2,152.7 413.0,152.5 416.8,152.1 420.6,151.9 424.4,151.7 428.2,151.6 432.0,151.6 435.8,151.5 439.6,151.5 443.4,151.5 447.2,151.5 451.0,151.7 454.8,151.9 458.6,152.1 462.4,152.4 466.2,152.7 470.0,153.1 473.8,153.4 477.6,153.7 481.4,153.9 485.2,154.2 489.0,154.4 492.8,154.4 496.6,154.6 500.4,154.5 504.2,154.7 508.0,154.7 511.8,154.9 515.6,154.9 519.4,155.0 523.2,155.2 527.0,155.4 530.8,155.8 534.6,156.0 538.4,156.3 542.2,156.6 546.0,156.9 549.8,152.3 553.6,158.2 557.4,170.0 561.2,186.0 565.0,197.9 568.8,205.0 572.6,205.6 576.4,205.5 580.2,205.4 584.0,205.5"/>
+        <polyline class="l-v11" points="52.0,184.9 55.8,185.9 59.6,187.3 63.4,188.5 67.2,190.0 71.0,193.1 74.8,198.6 78.6,205.0 82.4,206.9 86.2,204.8 90.0,202.7 93.8,200.9 97.6,199.1 101.4,197.8 105.2,197.1 109.0,197.4 112.8,195.9 116.6,195.0 120.4,195.8 124.2,196.2 128.0,196.6 131.8,199.0 135.6,201.7 139.4,202.5 143.2,203.0 147.0,203.5 150.8,204.0 154.6,204.5 158.4,205.3 162.2,206.1 166.0,206.7 169.8,207.4 173.6,208.0 177.4,208.4 181.2,208.9 185.0,209.3 188.8,209.6 192.6,209.7 196.4,209.7 200.2,209.6 204.0,209.4 207.8,209.2 211.6,209.0 215.4,208.6 219.2,208.4 223.0,208.0 226.8,207.6 230.6,207.4 234.4,207.3 238.2,207.4 242.0,206.8 245.8,203.8 249.6,197.8 253.4,188.7 257.2,178.9 261.0,170.6 264.8,164.2 268.6,159.7 272.4,157.2 276.2,156.4 280.0,155.8 283.8,154.2 287.6,152.2 291.4,149.5 295.2,146.1 299.0,142.8 302.8,138.9 306.6,135.0 310.4,132.0 314.2,129.8 318.0,128.6 321.8,128.1 325.6,127.6 329.4,128.0 333.2,128.3 337.0,128.6 340.8,128.9 344.6,129.0 348.4,129.1 352.2,129.2 356.0,129.9 359.8,132.0 363.6,135.0 367.4,138.4 371.2,141.8 375.0,145.4 378.8,148.6 382.6,151.3 386.4,152.6 390.2,153.2 394.0,153.2 397.8,153.1 401.6,153.1 405.4,152.9 409.2,152.7 413.0,152.5 416.8,152.1 420.6,151.9 424.4,151.7 428.2,151.6 432.0,151.6 435.8,151.5 439.6,151.5 443.4,151.5 447.2,151.5 451.0,151.7 454.8,151.9 458.6,152.1 462.4,152.4 466.2,152.7 470.0,153.1 473.8,153.4 477.6,153.7 481.4,153.9 485.2,154.2 489.0,154.4 492.8,154.4 496.6,154.6 500.4,154.5 504.2,154.7 508.0,154.7 511.8,154.9 515.6,154.9 519.4,155.0 523.2,155.2 527.0,155.4 530.8,155.8 534.6,156.0 538.4,156.3 542.2,156.6 546.0,156.9 549.8,157.2 553.6,159.2 557.4,163.2 561.2,169.1 565.0,176.7 568.8,186.2 572.6,194.9 576.4,202.2 580.2,205.3 584.0,205.0"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <h3>Hopp: fingerleder som vrids mer än 6° på en bildruta</h3>
+    <p class="sub">Hela klippet, alla femton leder per hand. Mocapen själv är måttstocken.</p>
+    <div class="bars">
+      <div class="bar-row"><span>Mocapen</span><div class="bar-pair">
+        <div class="bar-wrap"><div class="bar" style="--c:var(--muted);width:4.5%"></div><span class="bar-val">vä 5</span></div>
+        <div class="bar-wrap"><div class="bar" style="--c:var(--muted);width:0.5%"></div><span class="bar-val">hö 0</span></div></div></div>
+      <div class="bar-row"><span>Version 10</span><div class="bar-pair">
+        <div class="bar-wrap"><div class="bar" style="--c:var(--velvet);width:100%"></div><span class="bar-val">vä 110</span></div>
+        <div class="bar-wrap"><div class="bar" style="--c:var(--velvet);width:70%"></div><span class="bar-val">hö 77</span></div></div></div>
+      <div class="bar-row"><span>Version 11</span><div class="bar-pair">
+        <div class="bar-wrap"><div class="bar" style="--c:var(--ue);width:15.5%"></div><span class="bar-val">vä 17</span></div>
+        <div class="bar-wrap"><div class="bar" style="--c:var(--ue);width:0.5%"></div><span class="bar-val">hö 0</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="table-box">
+    <table>
+      <thead><tr><th>Mått</th><th>Version 9</th><th>Version 10</th><th>Version 11</th></tr></thead>
+      <tbody>
+        <tr><td>Handflatans glipa mot armstödet</td><td class="n">0,6–0,8 cm</td><td class="n">0,2–0,5 cm</td><td class="n best">0,2–0,5 cm</td></tr>
+        <tr><td>Fingrar in i armstödet när hon sitter</td><td class="n">högst 0,5 cm</td><td class="n">0,4 cm, en gång 1,9</td><td class="n best">högst 0,4 cm</td></tr>
+        <tr><td>Händerna står stilla (andel av kontakttiden)</td><td class="n">33–38 %</td><td class="n">53–60 %</td><td class="n">52–58 %</td></tr>
+        <tr><td>Fötterna står stilla</td><td class="n">56–58 %</td><td class="n">66–68 %</td><td class="n">62–66 %</td></tr>
+        <tr><td>Fingrarnas värsta ryck</td><td class="n">–</td><td class="n">101° / 113°</td><td class="n best">12° / 2°</td></tr>
+        <tr><td>Största fingerböj</td><td class="n">80°</td><td class="n">80°</td><td class="n best">30°</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="sub">I version 11 glider handen och foten mjukt mellan två vilolägen i stället för att hoppa. Därför står de still lite färre bildrutor, men medelfarten är densamma.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Nytt klipp</div>
+    <h2>Så körs motorn på nästa animation</h2>
+    <p class="sub">Allt ligger i skillen <code>kontaktmotor</code>. Unreal (OmbraPodcast) och Blender ska vara igång med Blender-MCP påslaget.</p>
+  </div>
+  <div class="say"><b>Enklast:</b> säg "kör kontaktmotorn på AIScen_2" så gör Claude stegen nedan och skickar jämförelsefilmen.</div>
+  <ol class="steps">
+    <li class="step">
+      <div class="step-h"><span class="num">1</span><span class="tag ue">Unreal</span><b>Förbered klippet</b></div>
+      <p class="sub">Placerar kroppen i fåtöljen, exporterar scenen och spelar in sanningen. Byter tillfälligt till fysiknivån och tillbaka. <code>-SittFran</code> är första bildrutan där hon sitter.</p>
+      <div class="code"><button class="copy" type="button">Kopiera</button><pre>&amp; "$env:USERPROFILE\.claude\skills\kontaktmotor\scripts\kontakt_forbered.ps1" -Klipp AIScen_2 -SittFran 99</pre></div>
+    </li>
+    <li class="step">
+      <div class="step-h"><span class="num">2</span><span class="tag bl">Blender</span><b>Bygg scenen och bron in</b></div>
+      <div class="code"><button class="copy" type="button">Kopiera</button><pre>import os
+SK = os.path.expanduser(r"~\.claude\skills\kontaktmotor\blender")
+for f in ("kontakt_motor.py", "kontakt_brygga.py", "kontakt_losare2.py",
+          "kontakt_glid.py", "kontakt_scen.py", "kor_bakgrund.py"):
+    exec(open(SK + "\\" + f, encoding="utf-8").read())
+FBX = r"I:\Verkstad\projekt\2026-10-02_lisa-mobler\fbx"
+bygg_scen(r"I:\Verkstad\projekt\kontakt\AIScen_2", "AIScen_2",
+          klader=[(FBX + r"\Lisa_face.fbx", "huvud"), (FBX + r"\Lisa_Outfits.fbx", "kladA"),
+                  (FBX + r"\Lisa_2.fbx", "kladB")],
+          truth=r"I:/Unreal Engine/Projects/OmbraPodcast/Saved/ClaudeScripts/pod_truth_AIScen_2.json")</pre></div>
+    </li>
+    <li class="step">
+      <div class="step-h"><span class="num">3</span><span class="tag bl">Blender</span><b>Kör motorn och mät</b></div>
+      <p class="sub">Körs i bakgrunden i Blender (cirka 2,5 minuter), eftersom ett vanligt anrop ger timeout efter ett par minuter. Grunden sparas som <code>kontakt_bas</code>, så fingrarna kan köras om för sig på cirka 40 sekunder.</p>
+      <div class="code"><button class="copy" type="button">Kopiera</button><pre>def jobb():
+    km = Kontakt(); lo = Losare2(km)
+    r = lo.kor(kalla="UE_sanning", ny="kontakt", vikter=MAPP + r"\vikter.json")
+    kont = kontakter_fran_vikter(MAPP + r"\vikter.json")
+    return {"rapport": r, "ryck": finger_ryck(km.arm, "kontakt", kontakter=kont),
+            "glid": glid(km.arm, "kontakt", kont)}
+starta(jobb, MAPP + r"\jobb.json")</pre></div>
+    </li>
+    <li class="step">
+      <div class="step-h"><span class="num">4</span><span class="tag bl">Blender</span><b>Bron ut</b></div>
+      <div class="code"><button class="copy" type="button">Kopiera</button><pre>br = Brygga(TRUTH)
+br.till_ue("kontakt", BEN, r"I:/Unreal Engine/Projects/OmbraPodcast/Saved/ClaudeScripts/pod_kontakt_AIScen_2_v1.json")</pre></div>
+    </li>
+    <li class="step">
+      <div class="step-h"><span class="num">5</span><span class="tag ue">Unreal</span><b>Baka, rendera och jämför</b></div>
+      <div class="code"><button class="copy" type="button">Kopiera</button><pre>&amp; "$env:USERPROFILE\.claude\skills\kontaktmotor\scripts\kontakt_ue.ps1" -Klipp AIScen_2 -N 1 -Offset "[x, y, 0, yaw]"</pre></div>
+      <p class="sub">Ger <code>AS_Body_AIScen_2_kontakt1</code> och en närbild. <code>jamfor.sh</code> gör jämförelsefilmen i <code>I:\Ombra Media\Podcast\Mocap</code>.</p>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Lärdomar</div>
+    <h2>Fällor vi redan har gått i</h2>
+  </div>
+  <div class="list2">
+    <div class="item"><b>Spara aldrig AS_Body_&lt;klipp&gt;</b><span>När källklippet sparas fylls retarget-posen i, och Lisas proportioner ändras. Frågar Unreal om att spara klippet: välj "Don't Save". Bakningen tömmer retarget-källan och skriver egna spår för 71 ben.</span></div>
+    <div class="item"><b>Lita inte på FBX-längder</b><span>FBX ger mocap-skelettets benlängder, 2–4 cm fel. Använd alltid bron.</span></div>
+    <div class="item"><b>Mät innan du gissar</b><span>Fingrarna hoppade inte på grund av Unreals fysik. De hoppade på grund av motorns egna val per bildruta. Ryckmåttet visade det på en gång.</span></div>
+    <div class="item"><b>Planera över tid</b><span>Ett val per bildruta slår om vid trösklar. Välj över hela klippet och sätt ett tak för ändring per bildruta.</span></div>
+    <div class="item"><b>Fingrarna kräver LOD 0</b><span>På lägre LOD hoppar Unreal över fingrarnas hjälpben. Inspelningen tvingar LOD 0.</span></div>
+    <div class="item"><b>Armaturen skalar 0,01</b><span>En matris utan skalan gjorde handen 100 gånger större i en mätning, och armen flyttades flera meter. Hjälparen <code>_ben_matris()</code> tar hand om det.</span></div>
+    <div class="item"><b>Långa körningar i Blender</b><span>MCP-anropet ger timeout efter ungefär två minuter. Kör i bakgrunden med <code>kor_bakgrund.py</code> och läs resultatfilen.</span></div>
+    <div class="item"><b>Unreal kör i 30 fps</b><span><code>set</code>-kommandon är spärrade i editorn. För finare steg används tidsdilatation.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Nästa</div>
+    <h2>Kvar att göra</h2>
+  </div>
+  <div class="list2">
+    <div class="item"><b>Handen sveper genom fåtöljen</b><span>Innan hon sätter sig går fingrarna 1,4–3,4 cm in i bildruta 31–49.</span></div>
+    <div class="item"><b>Hälarna i fåtöljens fot</b><span>När hon backar för att sätta sig.</span></div>
+    <div class="item"><b>Underarmarna svävar 5 cm</b><span>Armstöden på 68 cm är låga för Lisas proportioner. Antingen höjs de på en kopia av fåtöljen, eller så får det vara.</span></div>
+    <div class="item"><b>Kjolen trycks ihop</b><span>Cirka 4,7 cm in i sitsen. Det gäller kläderna, inte kroppen.</span></div>
+    <div class="item"><b>Mara och soffan</b><span>Samma motor ska fungera för Mara i <code>SM_Soffa_Gast</code>, men ytgränserna för sits och rygg måste mätas om. Inte testat ännu.</span></div>
+    <div class="item"><b>Fler klipp</b><span>Hela biblioteket på tio klipp ska köras genom motorn.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Filer</div>
+    <h2>Var allt ligger</h2>
+  </div>
+  <div class="table-box files">
+    <table>
+      <thead><tr><th>Plats</th><th>Innehåll</th></tr></thead>
+      <tbody>
+        <tr><td>~\.claude\skills\kontaktmotor\</td><td>Skillen: instruktionerna (SKILL.md) och alla skript nedan.</td></tr>
+        <tr><td>…\kontaktmotor\blender\</td><td>Motorn (<code>kontakt_motor</code>, <code>kontakt_losare2</code>), bron, scenbygget, måtten och bakgrundskörningen.</td></tr>
+        <tr><td>…\kontaktmotor\unreal\</td><td>Unreal-skripten. De körs från <code>OmbraPodcast\Saved\ClaudeScripts</code>.</td></tr>
+        <tr><td>…\kontaktmotor\scripts\</td><td><code>kontakt_forbered.ps1</code>, <code>kontakt_ue.ps1</code>, <code>jamfor.sh</code> och hjälparna för Unreal-konsolen.</td></tr>
+        <tr><td>I:\Verkstad\projekt\2026-10-02_lisa-mobler\kontakt\AIScen_1\</td><td>Första klippet: Blender-filen, vikterna och alla mätfiler (v1–v11).</td></tr>
+        <tr><td>/Game/Podcast/Mocap/AS_Body_AIScen_1_kontakt11</td><td>Den färdiga animationen i Unreal.</td></tr>
+        <tr><td>I:\Ombra Media\Podcast\Mocap\</td><td>Jämförelsefilmerna, till exempel <code>Jamforelse_kontakt_v10_v11_nara.mp4</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>Byggd 2–3 oktober 2026. Hela historien, med vad som provades och varför, står i OmbraPodcasts DEVLOG.</footer>
+
+</div>
+
+<script>
+document.querySelectorAll(".copy").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var pre = b.parentElement.querySelector("pre"); var t = pre.innerText;
+    function ok() { b.textContent = "Kopierat"; setTimeout(function () { b.textContent = "Kopiera"; }, 1500); }
+    function markera() { var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Markerat"; }
+    try { navigator.clipboard.writeText(t).then(ok, markera); } catch (e) { markera(); }
+  });
+});
+</script>
+
+</body>
+</html>
