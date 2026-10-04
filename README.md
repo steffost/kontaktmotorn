@@ -1,5 +1,5 @@
 # Kontaktmotorn
 
-Steg för steg: hur Lisas animationer i Ombra Podcast får rätt kontakt med möblerna. Cascadeur, en kontaktmotor i Blender, lager och en sensor i Unreal, med mätningar.
+Hela kedjan steg för steg, med ungefärliga tider: från AI-film till färdig animation för Ombra Podcast. Unreals Markerless Mocap, superbildrutor och lager i Cascadeur, en kontaktmotor i Blender (sitsen, armstöden, armbågar mot knän, fingrar, fötter) och en sensor i Unreal, med mätningar.
 
 Sidan: http://ombraprime.com/kontaktmotorn/

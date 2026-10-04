@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kontaktmotorn</title>
-<meta name="description" content="Steg för steg: hur Lisas animationer i Ombra Podcast får rätt kontakt med möblerna. Cascadeur, en kontaktmotor i Blender, lager och en sensor i Unreal, med mätningar.">
+<meta name="description" content="Hela kedjan steg för steg, med tider: från AI-film till färdig animation för Ombra Podcast. Unreals mocap, superbildrutor i Cascadeur, en kontaktmotor i Blender, lager och en sensor i Unreal, med mätningar.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kontaktmotorn">
-<meta property="og:description" content="Händer som vilar på armstöden, fingrar som följer kanten, en gångväg runt möblerna och en sensor som känner kontakten. Så fungerar Ombra Podcasts kontaktmotor, steg för steg.">
+<meta property="og:description" content="Från AI-film till färdig animation på cirka 50 minuter: armbågar som vilar på knäna, händer på armstöden, fingrar som följer kanten och en sensor som känner kontakten. Hela kedjan, steg för steg.">
 <meta property="og:image" content="http://ombraprime.com/kontaktmotorn/hero.jpg">
 <meta property="og:url" content="http://ombraprime.com/kontaktmotorn/">
 <meta name="twitter:card" content="summary_large_image">
@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: en spalt som läses uppifrån och ned som kedjan; varje steg märkt med var det körs (Unreal blå, Blender orange); fåtöljens sammet är accenten för kontakt */
+/* Layout: en spalt som läses uppifrån och ned som kedjan; varje steg märkt med var det körs (Unreal blå, LTX grön, Blender orange, Cascadeur lila); fåtöljens sammet är accenten för kontakt */
 :root {
   --bg: #eceff2;
   --panel: #ffffff;
@@ -207,6 +207,27 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
   .l-v11, .l-vag { stroke-dasharray: 2400; stroke-dashoffset: 0; animation: rita 2.2s ease-out 0.3s both; }
   @keyframes rita { from { stroke-dashoffset: 2400; } to { stroke-dashoffset: 0; } }
 }
+
+/* v14: kedjan i ordning med tider */
+:root { --ai: #2e7a4b; --ai-soft: #2e7a4b1a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ai: #62c286; --ai-soft: #62c2861f; } }
+:root[data-theme="dark"] { --ai: #62c286; --ai-soft: #62c2861f; }
+.tag.ai { color: var(--ai); background: var(--ai-soft); }
+.tid { margin-left: auto; font-family: var(--font-mono); font-size: 0.76rem; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.chain { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.chain .step { border-left: 4px solid var(--c, var(--line)); }
+.chain .step.ue { --c: var(--ue); } .chain .step.bl { --c: var(--bl); } .chain .step.cs { --c: var(--cs); } .chain .step.ai { --c: var(--ai); }
+.chain .step .num { --c: var(--ink); }
+.chain .step p { max-width: 80ch; }
+.how { font-size: 0.9rem; color: var(--muted); }
+.how code { font-size: 0.82rem; }
+.phase { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-top: 8px; }
+.total { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.rule-list { display: grid; gap: 10px; }
+.bars.wide .bar-wrap { grid-template-columns: minmax(0, 1fr) 170px; }
+@media (max-width: 460px) { .bars.wide .bar-wrap { grid-template-columns: minmax(0, 1fr); } }
+.rule-list .item { border-left: 4px solid var(--velvet); }
+@media (max-width: 820px) { .total { grid-template-columns: minmax(0, 1fr); } }
 </style>
 </head>
 <body>
@@ -214,68 +235,198 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
 <div class="wrap">
 
 <header class="hero">
-  <div class="eyebrow">Ombra Podcast · animation · skill "kontaktmotor"</div>
+  <div class="eyebrow">Ombra Podcast · animation · skills "animationsflode" och "kontaktmotor"</div>
   <h1>Kontaktmotorn</h1>
-  <p class="lead">Mocapen vet inget om fåtöljen. Kontaktmotorn rättar varje bildruta så att rumpan vilar på sitsen, händerna ligger på armstöden, fingrarna följer kanten och fötterna står på golvet. Sedan version 13 går Lisa också runt möblerna i stället för igenom dem.</p>
-  <p class="sub">Rättningarna läggs i egna lager i Cascadeur, så grundanimationen alltid finns kvar. En sensor i Unreal känner kontakten live och går igenom ett helt klipp på 20 sekunder.</p>
+  <p class="lead">Från en AI-film till en färdig animation där Lisa sitter rätt i fåtöljen. Kedjan har femton steg i fyra program. Rumpan vilar på sitsen, händerna på armstöden, armbågarna på knäna, fingrarna följer kanten och fötterna står still.</p>
+  <p class="sub">Unreal tar fram rörelsen ur filmen. Cascadeur är verkstaden. En kontaktmotor i Blender räknar ut rättningarna i bakgrunden, och de läggs i egna lager i Cascadeur, så grunden alltid finns kvar. En sensor i Unreal går sist igenom hela klippet på 20 sekunder. Ett klipp tar i dag cirka 50 minuter maskintid och fyra klick.</p>
   <div class="chips">
-    <span class="chip v">Version 13</span>
-    <span class="chip">3 oktober 2026</span>
-    <span class="chip">Testad på AIScen_1: Lisa i SM_Fatolj_Lisa</span>
+    <span class="chip v">Version 14</span>
+    <span class="chip">4 oktober 2026</span>
+    <span class="chip">Testad på AIScen_1 (gå fram och sätta sig) och AIScen_2 (armbågarna mot knäna)</span>
   </div>
   <figure>
-    <img src="hero.jpg" width="1120" height="660" alt="Lisa sitter i den röda fåtöljen med båda händerna vilande på armstöden och fingrarna över kanten">
-    <figcaption>Version 11, bildruta 200, renderad i Unreal. Handflatorna ligger 0,2–0,5 cm över armstöden och fingrarna följer kanten.</figcaption>
+    <img src="hero.jpg" width="1400" height="390" alt="Till vänster AI-filmen där kvinnan lutar sig fram med händerna framför knäna. Till höger Lisa i Unreal i samma pose, i samma fåtölj och från samma vinkel.">
+    <figcaption>AIScen_2, bildruta 150. AI-filmen till vänster, Lisa i Unreal efter hela kedjan till höger. Kameran är densamma.</figcaption>
   </figure>
 </header>
 
 <section>
   <div class="sec-head">
     <div class="eyebrow">Översikt</div>
-    <h2>Hela vägen, från klipp till färdig animation</h2>
-    <p class="sub">Cascadeur är verkstaden där rörelsen görs, med Live Link till Unreal hela tiden. Blender räknar ut kontakten i bakgrunden. Rättningarna läggs tillbaka i Cascadeur, i egna lager. Unreal kontrollerar och gör filmen. Färgen visar var varje steg körs.</p>
+    <h2>Hela kedjan på en bild</h2>
+    <p class="sub">Samma ögonblick, bildruta 150, genom kedjan. Startbilden renderas i Unreal och AI-filmen görs från den. Unreal tar fram rörelsen ur filmen, och efter städning, kontakt och lager sitter Lisa som i filmen.</p>
   </div>
-  <div class="lanes four">
-    <div class="lane cs">
-      <span class="tag cs">Cascadeur · grunden</span>
-      <ol>
-        <li><span class="num">1</span><div><b>Video blir rörelse</b><span>Med Cascadeurs egen funktion, från och med nästa klipp. AIScen_1 gick via Unreals markerless mocap.</span></div></li>
-        <li><span class="num">2</span><div><b>Få nycklar</b><span>Animation Unbaking städar mocapen till ett tjugotal nycklar. De blir klippets supernycklar.</span></div></li>
-        <li><span class="num">3</span><div><b>Möblerna in</b><span>Fåtöljen på exakt samma plats som i Unreal, så att man ser den när man posar.</span></div></li>
-      </ol>
+  <figure>
+    <img src="kedja.jpg" width="1600" height="413" alt="Fyra bilder i rad: startbilden där Lisa sitter upprätt med händerna på armstöden, AI-filmen där hon lutar sig fram, Unreals råa mocap och den färdiga animationen.">
+    <figcaption>Startbild, AI-film, Unreals råa mocap och färdig animation.</figcaption>
+  </figure>
+  <div class="dots"><span style="--c:var(--ue)"><i></i>Unreal</span><span style="--c:var(--ai)"><i></i>AI-film (LTX)</span><span style="--c:var(--bl)"><i></i>Blender, dold miniräknare</span><span style="--c:var(--cs)"><i></i>Cascadeur, verkstaden</span></div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Steg för steg</div>
+    <h2>Från AI-film till färdig animation</h2>
+    <p class="sub">I den ordning de körs, med ungefärlig tid för ett klipp på 10 sekunder (301 bildrutor). Claude kör alla steg med skript. Stefan klickar fyra gånger: godkänner, kopplar bort och kopplar på Live Link, och importerar filmen när Cascadeurs egen video-mocap används.</p>
+  </div>
+  <ol class="chain">
+    <li class="phase">Förberett en gång per karaktär och möbel</li>
+    <li class="step">
+      <div class="step-h"><span class="num">0</span><span class="tag ue">Unreal</span><span class="tag bl">Blender</span><span class="tag cs">Cascadeur</span><b>Scen, möbel och mallar</b><span class="tid">en gång</span></div>
+      <p>En egen AI-scen i Unreal med grått golv och vägg, mjukt ljus, den riktiga fåtöljen och Lisa på samma plats som i studion. Studion rörs aldrig.</p>
+      <p class="how">Möbeln får en kopia med exakt kollision för sensorn. Sensorn får 250 punkter på Lisas hud. Blender får en scen med Lisas exakta proportioner och fåtöljen på rätt plats. Cascadeur får en mallscen med riggad Lisa, fåtöljen och arbetsområde 0–300.</p>
+    </li>
+
+    <li class="phase">Rörelsen</li>
+    <li class="step ue">
+      <div class="step-h"><span class="num">1</span><span class="tag ue">Unreal</span><b>Startbild</b><span class="tid">ca 4 min</span></div>
+      <p>Lisa renderas i fåtöljen i den pose där förra klippet slutade. Då börjar det nya klippet där det gamla slutade.</p>
+      <p class="how">Kameran står snett framifrån, cirka 30°, med 35 mm cirka 3 m bort. En framåtlutning syns mycket bättre för mocapen från sidan än rakt framifrån. Renderas med Movie Render Queue.</p>
+    </li>
+    <li class="step ai">
+      <div class="step-h"><span class="num">2</span><span class="tag ai">LTX 2.5 lokalt</span><b>AI-film</b><span class="tid">ca 9 min</span></div>
+      <p>En lokal videomodell gör en film på 10 sekunder ur startbilden och en beskrivning av rörelsen. Den kostar inget att köra.</p>
+      <p class="how">Startbilden blir både första och sista bild, så klippet slutar i startposen och går att loopa. Kameran är låst i prompten. 720p, 24 bilder per sekund. Motorn startas bara när en film behövs och stoppas efteråt.</p>
+    </li>
+    <li class="step ue">
+      <div class="step-h"><span class="num">3</span><span class="tag ue">Unreal</span><b>Video blir rörelse</b><span class="tid">ca 4 min</span></div>
+      <p>Unreals Markerless Mocap (MetaHuman Animator) tar fram kroppens rörelse ur filmens 241 bildrutor.</p>
+      <p class="how">Vi provade Cascadeurs egen video-mocap på samma film. Fötterna gled 24 cm och hela kroppen hamnade fel, medan Unreals fötter höll sig inom 2,8 cm. Stefan sa "som natt och dag", så Unreals mocap är standard.</p>
+    </li>
+    <li class="step ue">
+      <div class="step-h"><span class="num">4</span><span class="tag ue">Unreal</span><b>Placering och sanning</b><span class="tid">ca 1 min</span></div>
+      <p>Klippet placeras så att de första bildrutorna ligger exakt där förra klippet slutade. Sedan spelas varje ben in i varje bildruta, precis som Unreal visar det på Lisa.</p>
+      <p class="how">Placeringen passar höft, knän och fötter mot förra klippets slut. Sanningen spelas in medan Sequencer stegas bild för bild med full detaljnivå, så fingrarnas hjälpben kommer med: 341 ben × 301 bildrutor på 21 sekunder, utan att byta nivå.</p>
+    </li>
+    <li class="step bl">
+      <div class="step-h"><span class="num">5</span><span class="tag bl">Blender</span><b>Bron och vilohanden</b><span class="tid">ca 1 min</span></div>
+      <p>Blender bygger exakt samma pose ur sanningen, flyttar in den i fåtöljens koordinater och ger fingrarna Lisas neutrala vilohand i hela klippet.</p>
+      <p class="how">Mocap av fingrar fungerar inte: de rullar och hoppar. Därför har grunden alltid vilohanden, och fingrar görs separat. Bron stämmer på 0,0003 cm. Hela klippet exporteras som en FBX.</p>
+    </li>
+
+    <li class="phase">Städningen i Cascadeur</li>
+    <li class="step cs">
+      <div class="step-h"><span class="num">6</span><span class="tag cs">Cascadeur</span><b>Klippet in</b><span class="tid">ca 1 min</span></div>
+      <p>En kopia av mallscenen öppnas i en ny flik, och hela klippet klistras in på en gång.</p>
+      <p class="how">Live Link måste vara bortkopplat innan en flik öppnas, annars får Unreal fel scen. Inklistringen stämmer på 0,5 cm.</p>
+    </li>
+    <li class="step cs">
+      <div class="step-h"><span class="num">7</span><span class="tag cs">Cascadeur</span><span class="tag bl">Blender</span><b>Superbildrutor</b><span class="tid">ca 6 min</span></div>
+      <p>Rörelsen görs om till ett trettiotal nycklar som går att redigera för hand. Gesterna finns kvar.</p>
+      <p class="how">Cascadeurs Animation Unbaking väljer först sina nycklar. Blender jämför sedan med mocapen och lägger nycklar med originalposen där det avviker mest, i rundor. Till sist får alla nycklar vilohanden, för Unbaking lägger annars till egna knutna fingrar.</p>
+    </li>
+
+    <li class="phase">Kontakten</li>
+    <li class="step bl">
+      <div class="step-h"><span class="num">8</span><span class="tag bl">Blender</span><b>Kontaktmotorn</b><span class="tid">ca 4,5 min</span></div>
+      <p>Motorn rättar varje bildruta. Fötterna står kvar och rumpan vilar på sitsen. Händerna läggs på armstöden, och armbågarna på knäna när hon lutar sig fram. Händer och underarmar hålls ute ur benen.</p>
+      <p class="how">Den mäter mot riktiga punkter i hud och kläder och mot möbelns exakta form. Passen beskrivs längre ned. För klipp där hon går används också gångvägen, så att hon går runt möblerna.</p>
+    </li>
+    <li class="step bl">
+      <div class="step-h"><span class="num">9</span><span class="tag bl">Blender</span><b>Jämna ut rättningen</b><span class="tid">ca 1 min</span></div>
+      <p>Rättningen jämnas ut över tiden så att den aldrig rycker.</p>
+      <p class="how">Skillnaden mot grunden jämnas ut per led över ±4 bildrutor. Innan ryckte huvud och armbågar upp till 3,4 cm per bildruta², mot 0,05 i mocapen. Efteråt är rörelsen lika mjuk som mocapen och kontakten densamma.</p>
+    </li>
+    <li class="step bl">
+      <div class="step-h"><span class="num">10</span><span class="tag bl">Blender</span><b>Fingrarna</b><span class="tid">ca 1 min</span></div>
+      <p>Bara där händerna vilar böjs fingrarna från vilohanden över armstödets kant. Annars är handen neutral.</p>
+      <p class="how">Led för led, med vinkeln vald över hela klippet så att den lugnaste vägen vinner. Fingrarna gick från 5 cm in i armstödet till 0,2 cm.</p>
+    </li>
+
+    <li class="phase">Lagren och kontrollen</li>
+    <li class="step cs">
+      <div class="step-h"><span class="num">11</span><span class="tag cs">Cascadeur</span><b>Lager för kropp och fingrar</b><span class="tid">ca 12 min</span></div>
+      <p>Kroppsrättningen läggs i lager ett och fingrarna i lager två. Grunden ligger orörd under. Varje lager kan slås av och på, tonas ner eller justeras.</p>
+      <p class="how">Nycklarna väljs så att lagret följer motorn inom 1°: 54 för kroppen och 27 för fingrarna. En inklistring sparar skillnaden mot allt under lagret. Steget är långsamt, cirka 5 sekunder per nyckel, och kan göras med en enda inklistring.</p>
+    </li>
+    <li class="step bl">
+      <div class="step-h"><span class="num">12</span><span class="tag bl">Blender</span><b>Kontroll</b><span class="tid">ca 2 min</span></div>
+      <p>Allt med lagren på exporteras och mäts mot motorns facit: kontakt, glipor, glidning och ryck.</p>
+      <p class="how">AIScen_2: medelavvikelsen mot facit är 0,1 cm. Det finns 15 små fingerhopp, mot 132 innan, och 3 små kroppsryck, mot 34.</p>
+    </li>
+    <li class="step ue">
+      <div class="step-h"><span class="num">13</span><span class="tag cs">Cascadeur</span><span class="tag ue">Unreal</span><b>Live Link</b><span class="tid">ett klick</span></div>
+      <p>Stefan startar Live Link på fliken. Unreal visar då Cascadeurs animation direkt, och varje ändring syns på en gång.</p>
+    </li>
+    <li class="step ue">
+      <div class="step-h"><span class="num">14</span><span class="tag ue">Unreal</span><b>Skanning</b><span class="tid">20 s</span></div>
+      <p>Sensorn går igenom alla 301 bildrutor i Unreal och mäter varje punkt mot möblerna och golvet.</p>
+      <p class="how">AIScen_2 version 3: inga bildrutor där något går in i fåtöljen. Fingrarna ligger an mot kanten inom en halv millimeter. Sensorn visar dessutom röda, gröna och gula prickar live medan man jobbar.</p>
+    </li>
+    <li class="step ue">
+      <div class="step-h"><span class="num">15</span><span class="tag ue">Unreal</span><b>Rendering och jämförelse</b><span class="tid">ca 4 min per vinkel</span></div>
+      <p>Klippet renderas från AI-filmens vinkel och läggs bredvid filmen. Ett överlägg med båda bilderna genomskinliga visar direkt hur väl rörelsen följer.</p>
+      <p class="how">Sedan kommer det som görs sist i Unreal: ansikte från rösten, små detaljer i Sequencer-lager och slutrendering.</p>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Tid</div>
+    <h2>Var tiden går</h2>
+    <p class="sub">Maskintid för ett klipp på 10 sekunder, steg för steg. Stefans fyra klick är inte inräknade.</p>
+  </div>
+  <div class="chart-box">
+    <div class="bars">
+      <div class="bar-row"><span>Startbild</span><div class="bar-wrap"><div class="bar" style="--c:var(--ue);width:33%"></div><span class="bar-val">4 min</span></div></div>
+      <div class="bar-row"><span>AI-film</span><div class="bar-wrap"><div class="bar" style="--c:var(--ai);width:75%"></div><span class="bar-val">9 min</span></div></div>
+      <div class="bar-row"><span>Unreal-mocap</span><div class="bar-wrap"><div class="bar" style="--c:var(--ue);width:33%"></div><span class="bar-val">4 min</span></div></div>
+      <div class="bar-row"><span>Sanning, bro</span><div class="bar-wrap"><div class="bar" style="--c:var(--bl);width:17%"></div><span class="bar-val">2 min</span></div></div>
+      <div class="bar-row"><span>Klippet in</span><div class="bar-wrap"><div class="bar" style="--c:var(--cs);width:8%"></div><span class="bar-val">1 min</span></div></div>
+      <div class="bar-row"><span>Superbildrutor</span><div class="bar-wrap"><div class="bar" style="--c:var(--cs);width:50%"></div><span class="bar-val">6 min</span></div></div>
+      <div class="bar-row"><span>Kontaktmotorn</span><div class="bar-wrap"><div class="bar" style="--c:var(--bl);width:38%"></div><span class="bar-val">4,5 min</span></div></div>
+      <div class="bar-row"><span>Utjämning, fingrar</span><div class="bar-wrap"><div class="bar" style="--c:var(--bl);width:17%"></div><span class="bar-val">2 min</span></div></div>
+      <div class="bar-row"><span>Lagren in</span><div class="bar-wrap"><div class="bar" style="--c:var(--cs);width:100%"></div><span class="bar-val">12 min</span></div></div>
+      <div class="bar-row"><span>Kontroll</span><div class="bar-wrap"><div class="bar" style="--c:var(--bl);width:17%"></div><span class="bar-val">2 min</span></div></div>
+      <div class="bar-row"><span>Skanning</span><div class="bar-wrap"><div class="bar" style="--c:var(--ue);width:3%"></div><span class="bar-val">20 s</span></div></div>
+      <div class="bar-row"><span>Rendering</span><div class="bar-wrap"><div class="bar" style="--c:var(--ue);width:33%"></div><span class="bar-val">4 min</span></div></div>
     </div>
-    <div class="lane bl">
-      <span class="tag bl">Blender · räknar</span>
-      <ol>
-        <li><span class="num">4</span><div><b>Sanningen in</b><span>Alla 341 ben i varje bildruta, exakt som Unreal visar dem (<code>pod_truth</code>, bron).</span></div></li>
-        <li><span class="num">5</span><div><b>Gångväg och sex pass</b><span>Hon går runt möblerna, sitter på sitsen och vilar händerna. Cirka tre minuter.</span></div></li>
-        <li><span class="num">6</span><div><b>Mät allt</b><span>Intryck i alla zoner, glipor, glidning, höftens bana och fingrarnas ryck.</span></div></li>
-      </ol>
-    </div>
-    <div class="lane cs">
-      <span class="tag cs">Cascadeur · lager</span>
-      <ol>
-        <li><span class="num">7</span><div><b>Poserna in</b><span>De rättade poserna klistras in på nycklarna med Cascadeurs egen import.</span></div></li>
-        <li><span class="num">8</span><div><b>Fingrarna i eget lager</b><span>Böjda över armstödens kant. Lagret av ger exakt grunden.</span></div></li>
-        <li><span class="num">9</span><div><b>Egna justeringar</b><span>Stefan finjusterar i ett eget lager och ser resultatet live i Unreal.</span></div></li>
-      </ol>
-    </div>
-    <div class="lane ue">
-      <span class="tag ue">Unreal · koll och film</span>
-      <ol>
-        <li><span class="num">10</span><div><b>Sensorn live</b><span>Röda, gröna och gula prickar på Lisa där hon nuddar möblerna.</span></div></li>
-        <li><span class="num">11</span><div><b>Skanna klippet</b><span>Alla 301 bildrutor mäts på 20 sekunder.</span></div></li>
-        <li><span class="num">12</span><div><b>Detaljer och film</b><span>Små detaljer sist i Sequencer, sedan rendering.</span></div></li>
-      </ol>
-    </div>
+  </div>
+  <div class="total">
+    <div class="fact"><span class="big">≈ 50 min</span><span>maskintid i dag för ett klipp på 10 sekunder, plus fyra klick.</span></div>
+    <div class="fact"><span class="big">≈ 35 min</span><span>när lagren klistras in med en enda inklistring och mjukas med ett kommando, och bara slutversionen renderas.</span></div>
+    <div class="fact"><span class="big">12 min</span><span>det största enskilda steget: varje lagernyckel klistras in för sig, cirka 5 sekunder styck.</span></div>
   </div>
 </section>
 
 <section>
   <div class="sec-head">
-    <div class="eyebrow">Beslutet</div>
-    <h2>Varför räkningen görs i Blender</h2>
-    <p class="sub">Vi provade tre vägar den 3 oktober.</p>
+    <div class="eyebrow">Beslut</div>
+    <h2>Tre regler som avgör kvaliteten</h2>
+    <p class="sub">De här har vi lärt oss den hårda vägen. De står överst i skillen <code>animationsflode</code>.</p>
+  </div>
+  <div class="three">
+    <div class="verdict pick">
+      <span class="tag ue">Unreals mocap</span>
+      <h3>Alltid Unreal för video till rörelse</h3>
+      <p class="sub">På samma AI-film gled Cascadeurs fötter 24 cm och Unreals 2,8 cm. Unreal fångade också att hon flyttar sig fram på sitsen och slutade där hon började. I överlägget ligger Unreals version nästan exakt på filmen.</p>
+      <span class="res yes">Standard sedan 4 oktober</span>
+    </div>
+    <div class="verdict pick">
+      <span class="tag bl">Vilohand</span>
+      <h3>Grunden har alltid vilohanden</h3>
+      <p class="sub">Mocap kan inte fånga fingrar: de rullar och hoppar. Grunden får Lisas neutrala vilohand. Fingrar som behövs, som böjen över armstödet, läggs i ett eget lager, och resten görs sist i Unreal.</p>
+      <span class="res yes">Hård regel</span>
+    </div>
+    <div class="verdict pick">
+      <span class="tag cs">Lager</span>
+      <h3>Varje rättning i ett eget lager</h3>
+      <p class="sub">Grunden rörs aldrig. Kroppsrättningen ligger i ett lager och fingrarna i ett annat. Egna ändringar görs i ett tredje lager. Allt kan slås av, tonas ner eller göras om.</p>
+      <span class="res yes">Hård regel</span>
+    </div>
+  </div>
+  <figure>
+    <img src="overlagg.jpg" width="1400" height="386" alt="Två genomskinliga överlägg på AI-filmen. Till vänster Cascadeur-kedjan, där huvud och kropp syns dubbelt. Till höger Unreal-kedjan, som nästan blir en enda bild.">
+    <figcaption>Bildruta 150. Varje version ligger genomskinligt ovanpå AI-filmen. Ju mindre dubbelbild, desto mer lik. Till vänster med Cascadeurs video-mocap, till höger med Unreals.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Beslutet bakom motorn</div>
+    <h2>Varför kontakten räknas i Blender</h2>
+    <p class="sub">Vi provade tre vägar den 3 oktober. Blender är bara en dold miniräknare. Ingen behöver öppna den.</p>
   </div>
   <div class="three">
     <div class="verdict">
@@ -287,37 +438,71 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
     <div class="verdict">
       <span class="tag cs">Cascadeur Indie</span>
       <h3>AutoPhysics och FixFoot</h3>
-      <p class="sub">Fysiken räknar bara golvet som stöd, inte fåtöljen. När händerna låstes sjönk kroppen 20–30 cm ner i fåtöljen. Kontakt med omgivningen kräver Pro. Cascadeur blev i stället verkstaden där rörelsen görs, med lager för rättningarna.</p>
+      <p class="sub">Fysiken räknar bara golvet som stöd, inte fåtöljen. När händerna låstes sjönk kroppen 20–30 cm ner i fåtöljen. Kontakt med omgivningen kräver Pro.</p>
       <span class="res no">Inte för kontakten</span>
     </div>
     <div class="verdict pick">
       <span class="tag bl">Blender</span>
       <h3>Egen kontaktmotor</h3>
-      <p class="sub">Mäter mot riktiga vertexar, både hud och kläder, och fåtöljens exakta geometri. Varje rättning är mätbar och kan köras om på nytt klipp.</p>
+      <p class="sub">Mäter mot varje punkt i hud och kläder och mot möbelns exakta form. Räknar i bakgrunden utan att låsa Unreal eller Cascadeur. Unreals Python kan inte läsa huden, så sensorn får nöja sig med 250 punkter.</p>
       <span class="res yes">Vald</span>
     </div>
   </div>
-</section>
-
-<section>
-  <div class="sec-head">
-    <div class="eyebrow">Bron</div>
-    <h2>Blender ser exakt det Unreal visar</h2>
-    <p class="sub">Unreal spelar animationen med Lisas egna benlängder och lägger höften 7,06 cm högre än i mocapen. Vägen via FBX gav i stället mocap-skelettets längder, och då hamnade händerna 2–4 cm fel. Därför spelar vi in vad Unreal faktiskt visar och bygger Blenders pose ur det.</p>
-  </div>
   <div class="bridge">
-    <div class="fact"><span class="big">341 × 241</span><span>ben × bildrutor spelas in medan Unreal spelar klippet, i komponentrum.</span></div>
-    <div class="fact"><span class="big">0,16 mm</span><span>fel efter hela rundan Unreal → Blender → Unreal. FBX-vägen gav 2–4 cm.</span></div>
+    <div class="fact"><span class="big">341 × 301</span><span>ben × bildrutor spelas in från Unreal på 21 sekunder, medan Sequencer stegas bild för bild. Blender bygger exakt samma pose ur det.</span></div>
+    <div class="fact"><span class="big">0,0003 cm</span><span>skillnad mellan Unreal och Blender. Vägen via FBX gav mocap-skelettets benlängder och 2–4 cm fel.</span></div>
   </div>
 </section>
 
 <section>
   <div class="sec-head">
-    <div class="eyebrow">Motorn</div>
-    <h2>Åtta pass, i den här ordningen</h2>
-    <p class="sub">Varje pass mäter först, ändrar sedan bara det som behövs och går mjukt in och ut, så att inget hoppar.</p>
+    <div class="eyebrow">Steg 7 · superbildrutor</div>
+    <h2>Få nycklar, men gesterna kvar</h2>
+    <p class="sub">En animation med en nyckel per bildruta går inte att redigera för hand. Cascadeurs Animation Unbaking gör om den till några få nycklar, men jämnar då ut små gester. Därför jämförs resultatet med mocapen, och nycklar läggs till där det avviker mest.</p>
+  </div>
+  <div class="chart-box">
+    <h3>Avvikelse från mocapen, medel över händer, armbågar, huvud, rygg och ben</h3>
+    <div class="bars wide">
+      <div class="bar-row"><span>Unbaking</span><div class="bar-wrap"><div class="bar" style="--c:var(--velvet);width:100%"></div><span class="bar-val">7 nycklar · 4,3 cm</span></div></div>
+      <div class="bar-row"><span>Runda 1</span><div class="bar-wrap"><div class="bar" style="--c:var(--cs);width:31%"></div><span class="bar-val">23 nycklar · 1,35 cm</span></div></div>
+      <div class="bar-row"><span>Runda 2</span><div class="bar-wrap"><div class="bar" style="--c:var(--cs);width:23%"></div><span class="bar-val">27 nycklar · 1,0 cm</span></div></div>
+      <div class="bar-row"><span>Vilohand på alla</span><div class="bar-wrap"><div class="bar" style="--c:var(--ok);width:14%"></div><span class="bar-val">27 nycklar · 0,6 cm</span></div></div>
+    </div>
+  </div>
+  <div class="list2">
+    <div class="item"><b>Unbaking körs med skript</b><span>Allt markeras och Cascadeurs kommando för Animation Unbaking anropas. Det tar under en minut, och ingen behöver klicka.</span></div>
+    <div class="item"><b>Nycklar där det avviker</b><span>Blender letar toppar i avvikelsen och lägger originalposen där, med minst fyra bildrutor emellan, tills ingenting avviker mer än 2 cm.</span></div>
+    <div class="item"><b>Unbaking hittar på fingrar</b><span>Fast källan hade vilohanden lade Unbaking egna knutna fingrar på några nycklar (bild 0, 22, 239 och 300). Därför får alla nycklar vilohanden till sist. Det gjorde också kroppen närmare mocapen.</span></div>
+    <div class="item"><b>Mjukt mellan nycklarna</b><span>Nya nycklar kommer in som hopp. Alla intervall ställs om till mjuka kurvor efter varje runda.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Steg 8 · motorn</div>
+    <h2>Tio pass, i den här ordningen</h2>
+    <p class="sub">Varje pass mäter först, ändrar sedan bara det som behövs och går mjukt in och ut. Vilka pass som körs beror på klippet. När hon sitter kör motorn fotankare, kropp, händer, lås, armbåge mot knä, underarm och frigång. När hon går kommer gångvägen först.</p>
   </div>
   <div class="passes">
+
+    <div class="pass">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <line class="floor" x1="6" y1="108" x2="154" y2="108"/>
+        <path class="chair" d="M98 64 h54 v14 h-54 z M140 22 h12 v56 h-12 z"/>
+        <path class="ghost" d="M128 62 L92 62 L88 102 L74 106 M128 62 L132 24"/>
+        <path class="body" d="M112 62 L76 62 L72 102 L58 106 M112 62 L116 24"/>
+        <path class="act" d="M60 96 v-14 m-6 6 h12 M54 98 q6 6 12 0"/>
+        <path class="act" d="M124 16 h-20"/><path class="actfill" d="M106 11 l-8 5 l8 5 z"/>
+        <text class="lbl" x="104" y="96">mocapen glider</text>
+        <text class="lbl-a" x="6" y="18">fötterna kvar</text>
+      </svg>
+      <div class="txt">
+        <span class="pn">Pass A</span>
+        <h3>Fotankare <span class="new">nytt i v14</span></h3>
+        <p>Video-mocapen glider långsamt i djupled. Cascadeurs version gled 24 cm på 10 sekunder, så skenben och händer hamnade i fåtöljen. Fötternas mittpunkt hålls kvar där den var i första bildrutan, och hela kroppen flyttas med. Används när hon sitter och inte flyttar fötterna med avsikt.</p>
+        <span class="rule">utjämnat över 12 bildrutor · körs först</span>
+      </div>
+    </div>
 
     <div class="pass">
       <svg viewBox="0 0 160 120" aria-hidden="true">
@@ -333,8 +518,8 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
       </svg>
       <div class="txt">
         <span class="pn">Pass 0</span>
-        <h3>Gångväg <span class="new">nytt i v13</span></h3>
-        <p>När hon går förbi en möbel flyttas hela kroppen åt sidan, lagom mycket för att höfter, lår, kjol, smalben och fötter ska gå fria. Banan räknas för hela klippet på en gång, så den svänger mjukt runt hörnet. Fötterna står kvar i varje steg, och när hon sätter sig är flytten noll.</p>
+        <h3>Gångväg</h3>
+        <p>När hon går förbi en möbel flyttas hela kroppen åt sidan, lagom mycket för att höfter, lår, kjol, smalben och fötter ska gå fria. Banan räknas för hela klippet på en gång, så den svänger mjukt runt hörnet. Fötterna står kvar i varje steg, och när hon sitter är flytten noll.</p>
         <span class="rule">1,5 cm luft · fötterna glider inte · noll när hon sitter</span>
       </div>
     </div>
@@ -352,7 +537,7 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
       <div class="txt">
         <span class="pn">Pass 1</span>
         <h3>Kropp</h3>
-        <p>Höften flyttas upp eller ner så att huden vilar på sitsen. Tyget får tryckas ihop. När hon står flyttas höften så att fötterna når golvet. Benen följer med IK. Passet körs två varv.</p>
+        <p>Höften flyttas upp eller ner så att huden vilar på sitsen. Tyget får tryckas ihop. När hon står flyttas höften så att fötterna når golvet. Benen följer med IK. Med Unreals mocap behövdes bara 1–2 cm, med Cascadeurs 13 cm.</p>
         <span class="rule">högst 0,5 cm in i sitsen</span>
       </div>
     </div>
@@ -369,7 +554,7 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
         <span class="pn">Pass 2</span>
         <h3>Händer</h3>
         <p>Handflatan läggs mot armstödet. Motorn provar olika vinklar runt handleden och väljer den där handflatan vilar och knogarna inte trycker för hårt. Armen räknas fram med IK. Kontakten slås på och av med fördröjning, så att den inte fladdrar.</p>
-        <span class="rule">luft 0,2 cm · lutning ±20° · rull ±12° · knogar högst 0,7 cm in</span>
+        <span class="rule">luft 0,2 cm · lutning ±20° · rull ±12°</span>
       </div>
     </div>
 
@@ -384,9 +569,28 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
       </svg>
       <div class="txt">
         <span class="pn">Pass 3</span>
-        <h3>Lås mot glidning <span class="new">nytt i v11</span></h3>
-        <p>En hand som vilar och en fot som står låses fast i läge och vinkel. Mocapen glider annars några centimeter. Två vilolägen tätt efter varandra binds ihop: handen glider mjukt till nästa läge i stället för att släppas tillbaka mot mocapen.</p>
-        <span class="rule">vila: under 0,8 cm/bildruta · inom 2,5 cm (hand), 2 cm (fot)</span>
+        <h3>Lås mot glidning</h3>
+        <p>En hand som vilar och en fot som står låses fast i läge och vinkel. Mocapen glider annars några centimeter. Två vilolägen tätt efter varandra binds ihop, så handen glider mjukt till nästa läge.</p>
+        <span class="rule">fötterna stilla 96–97 % i AIScen_2</span>
+      </div>
+    </div>
+
+    <div class="pass">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <line class="floor" x1="6" y1="110" x2="154" y2="110"/>
+        <path class="chair" d="M86 66 h66 v14 h-66 z M140 22 h12 v58 h-12 z"/>
+        <path class="ghost" d="M118 62 L124 20 L98 46 L64 40"/>
+        <path class="body" d="M118 62 L74 60 L70 106 M118 62 L94 26"/>
+        <path class="act" d="M94 26 L74 54 L40 46"/>
+        <circle class="hot" cx="74" cy="56" r="4.5"/>
+        <text class="lbl" x="104" y="16">mocapen</text>
+        <text class="lbl-a" x="6" y="76">armbåge</text><text class="lbl-a" x="6" y="88">på knät</text>
+      </svg>
+      <div class="txt">
+        <span class="pn">Pass 4</span>
+        <h3>Armbåge mot knä <span class="new">nytt i v14</span></h3>
+        <p>Kropp mot kropp: när hon lutar sig fram läggs armbågarna på knäna. Överarmen hänger nästan lodrätt, så det är ryggens lutning och axeln som flyttar armbågen. Huvudet behåller blicken. Sedan böjs armbågen så att underarmen ligger ovanpå låret, och händerna hålls ute ur benen. När armbågen ska vila avgörs av mocapen själv.</p>
+        <span class="rule">glipa 0,2–0,3 cm · rygg högst 20° · axel högst 12°</span>
       </div>
     </div>
 
@@ -401,9 +605,9 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
         <text class="lbl" x="4" y="14">axel</text><text class="lbl" x="118" y="66">handled</text>
       </svg>
       <div class="txt">
-        <span class="pn">Pass 4</span>
+        <span class="pn">Pass 5</span>
         <h3>Underarm</h3>
-        <p>Armbågen vrids runt linjen mellan axel och handled så att underarmen vilar på armstödet. Den vrids bara om underarmen faktiskt når ner, annars blir det en konstig armbåge.</p>
+        <p>Armbågen vrids runt linjen mellan axel och handled så att underarmen vilar på armstödet. Den vrids bara om underarmen faktiskt når ner.</p>
         <span class="rule">högst ±30° · bara när handen vilar</span>
       </div>
     </div>
@@ -418,10 +622,10 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
         <text class="lbl-a" x="40" y="34">led för led</text>
       </svg>
       <div class="txt">
-        <span class="pn">Pass 5</span>
-        <h3>Fingrar <span class="new">nytt i v11</span></h3>
-        <p>Fingrarna böjs led för led, från knogen ut till toppen, så att de ligger an mot ytan eller följer kanten. Vinkeln väljs över hela klippet på en gång, och varje ändring mellan bildrutor kostar. Därför tar motorn den lugnaste vägen i stället för att hoppa.</p>
-        <span class="rule">högst 5° per bildruta · drar mot ytan bara när handen vilar · tummen dras aldrig</span>
+        <span class="pn">Pass 6</span>
+        <h3>Fingrar</h3>
+        <p>Från vilohanden böjs fingrarna led för led så att de följer armstödets kant, men bara där handen vilar. Vinkeln väljs över hela klippet, så den lugnaste vägen vinner. Fingrarna läggs i ett eget lager.</p>
+        <span class="rule">högst 5° per bildruta · tummen dras aldrig</span>
       </div>
     </div>
 
@@ -435,9 +639,9 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
         <text class="lbl-a" x="54" y="40">rättning</text>
       </svg>
       <div class="txt">
-        <span class="pn">Pass 6</span>
+        <span class="pn">Pass 7</span>
         <h3>Säkerhet för fingertoppar</h3>
-        <p>Till sist kontrolleras varje vertex i fingrarna. Där en topp fortfarande går in böjs fingret minsta möjliga. Rättningen sprids över bildrutorna runt omkring, så att den inte syns som ett ryck.</p>
+        <p>Varje vertex i fingrarna kontrolleras. Där en topp fortfarande går in böjs fingret minsta möjliga, och rättningen sprids över bildrutorna runt omkring.</p>
         <span class="rule">tillåtet: knoge 0,7 cm, topp 0,3 cm in</span>
       </div>
     </div>
@@ -453,30 +657,101 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
         <text class="lbl-a" x="6" y="18">ut med IK</text>
       </svg>
       <div class="txt">
-        <span class="pn">Pass 7</span>
+        <span class="pn">Pass 8</span>
         <h3>Frigång</h3>
-        <p>Fötter och smalben som inte vilar men ändå går in i möbeln flyttas ut, och benet följer med IK. Medan foten står still är flytten konstant, så att den inte glider. Efter gångvägen i version 13 hade passet inget kvar att göra i AIScen_1.</p>
-        <span class="rule">bara fötter och smalben · konstant medan foten står</span>
+        <p>Fötter och smalben som inte vilar men ändå går in i möbeln flyttas ut, och benet följer med IK. Medan foten står still är flytten konstant, så att den inte glider.</p>
+        <span class="rule">bara fötter och smalben</span>
       </div>
     </div>
 
+  </div>
+  <p class="sub">Efter motorn jämnas rättningen ut över ±4 bildrutor (steg 9). Kontakten blir densamma, men rörelsen blir lika mjuk som mocapen.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Utmaningen · AIScen_2</div>
+    <h2>Armbågarna mot knäna, tre försök</h2>
+    <p class="sub">Bibliotekets klipp 7: Lisa lutar sig fram med armbågarna på knäna, pratar med händerna och lutar sig tillbaka. Det var första gången kedjan körde kropp mot kropp. Första försöket gick med Cascadeurs video-mocap, det andra med Unreals mocap, och det tredje med vilohand och utjämnad rättning.</p>
+  </div>
+  <div class="table-box">
+    <table>
+      <thead><tr><th>Mått</th><th>Cascadeur-mocap</th><th>Unreal-mocap v1</th><th>Unreal-mocap v3</th></tr></thead>
+      <tbody>
+        <tr><td>Fötternas drift i mocapen</td><td class="n">24 cm</td><td class="n">2,8 cm</td><td class="n best">2,8 cm</td></tr>
+        <tr><td>Grunden mot mocapen, medelavvikelse</td><td class="n">4,3 cm</td><td class="n">1,2 cm</td><td class="n best">0,6 cm</td></tr>
+        <tr><td>Armbåge mot knä, glipa (median)</td><td class="n">0,3–0,4 cm</td><td class="n">0,3 cm</td><td class="n best">0,2 cm</td></tr>
+        <tr><td>Arm eller hand in i benen, värst</td><td class="n">1,3–1,8 cm</td><td class="n">0,9 cm</td><td class="n best">0,9 cm</td></tr>
+        <tr><td>Bildrutor med något inne i fåtöljen (Unreal-skanning)</td><td class="n">22 + 29</td><td class="n best">0</td><td class="n best">0</td></tr>
+        <tr><td>Fötterna står still</td><td class="n">85 / 77 %</td><td class="n best">96 / 97 %</td><td class="n best">96 / 97 %</td></tr>
+        <tr><td>Fingerhopp, mer än 15° per bildruta</td><td class="n">–</td><td class="n">132</td><td class="n best">15</td></tr>
+        <tr><td>Kroppsryck, mer än 2,5 gånger mocapen</td><td class="n">–</td><td class="n">34</td><td class="n best">3</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <figure>
+    <img src="fingrar.jpg" width="1400" height="460" alt="Närbild av Lisas händer i bildruta 240. Till vänster med mocapens fingrar, som är knutna och rullar. Till höger med vilohand, där händerna ligger avslappnade och öppna på knäna.">
+    <figcaption>Bildruta 240, när hon sätter sig längre bak. Till vänster mocapens fingrar, till höger vilohanden plus fingerlagret.</figcaption>
+  </figure>
+  <p class="sub">I första försöket landade höger hand i armstödet i 22 bildrutor och fingrarna gick in i 29. Det försvann med Unreals mocap. Stefan såg sedan rullande fingrar och små ryck i andra försöket. De kom från mocapens fingrar, från Unbakings egna fingerposer och från motorns snabba övergångar. I tredje försöket är alla tre borta.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Steg 11 · lager i Cascadeur</div>
+    <h2>Rättningarna i egna lager, grunden orörd</h2>
+    <p class="sub">Cascadeur har lager som kan slås av och på eller tonas ner. Lager ett har kroppsrättningen och lager två fingrarna. Grunden är Unreals mocap som superbildrutor. Egna ändringar görs i ett tredje lager.</p>
+  </div>
+  <div class="three">
+    <div class="verdict">
+      <span class="tag cs">Så fungerar det</span>
+      <h3>Inklistring blir skillnad</h3>
+      <p class="sub">När en pose klistras in i ett lager sparas skillnaden mot allt under lagret. Fingerlagret flyttar kroppen högst 1,6 mm, och lagren av ger exakt grunden.</p>
+    </div>
+    <div class="verdict">
+      <span class="tag cs">Fällan</span>
+      <h3>Allt följer med</h3>
+      <p class="sub">Inklistringen gäller alla leder. Poserna byggs därför så att allt som inte ska rättas är lika med det som ligger under, till exempel vilohanden. Annars följer till exempel mocapens fingrar med in i lagret.</p>
+    </div>
+    <div class="verdict">
+      <span class="tag cs">Mjukt</span>
+      <h3>Inga hopp mellan nycklarna</h3>
+      <p class="sub">Nycklar i ett lager hoppar från början. Lager ett mjukas med ett skript. Lager två och senare mjukas med tidslinjens eget kommando, eftersom skriptgränssnittet bara når första lagret.</p>
+    </div>
   </div>
 </section>
 
 <section>
   <div class="sec-head">
-    <div class="eyebrow">Version 13 · gångvägen</div>
+    <div class="eyebrow">Steg 14 · sensorn i Unreal</div>
+    <h2>En sensor som känner kontakten</h2>
+    <p class="sub">Stefans idé var en "igelkott" av strålar runt Lisa. Den blev en sensor som mäter medan han posar i Cascadeur och ser resultatet via Live Link. Han ser prickarna, och Claude får samma siffror med bildrutans nummer.</p>
+  </div>
+  <div class="side">
+    <figure>
+      <img src="sensor.jpg" width="975" height="837" alt="Lisa på väg att sätta sig i den röda fåtöljen i Unreal. Röda prickar på armstödet där fingertopparna går in, en grön prick vid en fingertopp och gula prickar vid kängan.">
+      <figcaption>AIScen_1, bildruta 101. Röda prickar ritas på möbelns yta där huden går in, annars skulle möbeln dölja dem.</figcaption>
+    </figure>
+    <div class="stack">
+      <div class="dots"><span style="--c:var(--velvet)"><i></i>inne, mer än 0,5 cm</span><span style="--c:var(--ok)"><i></i>kontakt, ±0,5 cm</span><span style="--c:var(--bl)"><i></i>nära, högst 2 cm</span></div>
+      <div class="item"><b>250 punkter följer huden</b><span>Punkterna följer hennes ben precis som huden gör, med samma vikter. De räknas ut en gång per karaktär i Blender.</span></div>
+      <div class="item"><b>Två strålar per punkt</b><span>Unreals strålar ser bara ytor utifrån. En stråle går ut från huden och mäter glipan. En stråle går utifrån in mot huden: träffar den en yta på vägen är huden inne i möbeln.</span></div>
+      <div class="item"><b>Hela klippet på 20 sekunder</b><span>Sensorn stegar igenom alla 301 bildrutor och ställer sedan tillbaka tidslinjen. AIScen_2 version 3 hade inte en enda bildruta inne.</span></div>
+      <div class="item"><b>Kontrollerad mot Blender</b><span>Lägena stämmer inom 0,1 cm och gliporna inom 0,24 cm i snitt. Sensorn känner möbler och golv. Arm mot knä mäter kontaktmotorn tills vidare.</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">AIScen_1 · gångvägen</div>
     <h2>Hon går runt fåtöljen, inte igenom den</h2>
-    <p class="sub">Mocapens gångväg skar rakt genom fåtöljens hörn. Höften gick 10 cm in i armstödet och vänster smalben lika långt in i sidan och framkanten. Vänsterfoten landade dessutom 11 cm innanför stolens golvyta, och sedan gled båda fötterna 12–21 cm fram medan hon satte sig.</p>
+    <p class="sub">I första klippet skar mocapens gångväg rakt genom fåtöljens hörn. Höften gick 10 cm in i armstödet och vänster smalben lika långt in i sidan. Pass 0 löste det utan att flytta möbeln.</p>
   </div>
   <figure>
     <img src="gang.jpg" width="1280" height="960" alt="Fyra bilder av Lisa när hon går förbi fåtöljen. Före: kjolen och vänster smalben går in i armstödet. Efter: hon går en bit längre ut och går fri från stolen.">
     <figcaption>Bildruta 47, framifrån och från sidan. Version 12 till vänster, version 13 till höger. Kontrollbilder från Blender.</figcaption>
   </figure>
-  <div class="bridge">
-    <div class="fact"><span class="big">2 cm</span><span>så långt gick fåtöljen att flytta innan händerna gled av armstöden när hon sitter. Gången behövde 10–15 cm. Vi provade cirka 400 placeringar, så fåtöljen står kvar och animationen anpassas.</span></div>
-    <div class="fact"><span class="big">0,09</span><span>cm per bildruta² som största ändring i flytten. Ett första försök som valde riktning bildruta för bildruta gav 4 cm per bildruta² när banan vreds runt hörnet, och höften ryckte. Nu är höftens rörelse lika mjuk som i originalet.</span></div>
-  </div>
   <div class="chart-box">
     <h3>Hur långt hon flyttas, bildruta för bildruta</h3>
     <p class="sub">Höftens flytt i sidled i centimeter, bildruta 0–130. Kurvan börjar i god tid, är som störst vid stolens hörn och är noll när hon sitter.</p>
@@ -501,93 +776,18 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
       </svg>
     </div>
   </div>
-  <div class="chart-box">
-    <h3>Hur djupt in i fåtöljen, när hon går förbi</h3>
-    <p class="sub">Värsta bildrutan i hela klippet, mätt på riktiga vertexar i hud och kläder.</p>
-    <div class="bars">
-      <div class="bar-row"><span>Höft</span><div class="bar-pair">
-        <div class="bar-wrap"><div class="bar" style="--c:var(--velvet);width:100%"></div><span class="bar-val">v12 9,9 cm</span></div>
-        <div class="bar-wrap"><div class="bar" style="--c:var(--ok);width:3%"></div><span class="bar-val">v13 0,3 cm</span></div></div></div>
-      <div class="bar-row"><span>Vänster smalben</span><div class="bar-pair">
-        <div class="bar-wrap"><div class="bar" style="--c:var(--velvet);width:100%"></div><span class="bar-val">v12 9,9 cm</span></div>
-        <div class="bar-wrap"><div class="bar" style="--c:var(--ok);width:0.5%"></div><span class="bar-val">v13 0 cm</span></div></div></div>
-      <div class="bar-row"><span>Vänster fot</span><div class="bar-pair">
-        <div class="bar-wrap"><div class="bar" style="--c:var(--velvet);width:28%"></div><span class="bar-val">v12 2,8 cm</span></div>
-        <div class="bar-wrap"><div class="bar" style="--c:var(--ok);width:0.5%"></div><span class="bar-val">v13 0 cm</span></div></div></div>
-    </div>
-  </div>
-  <p class="sub">Fötterna står still i fler bildrutor än förut (82 och 76 procent, mot 75 och 75). Händerna, underarmarna och hela sittdelen är oförändrade.</p>
-</section>
-
-<section>
-  <div class="sec-head">
-    <div class="eyebrow">Arbetssättet · lager i Cascadeur</div>
-    <h2>Rättningarna i egna lager, grunden orörd</h2>
-    <p class="sub">Cascadeur har lager som kan slås av och på eller tonas ner. Kontaktmotorns rättningar klistras in i ett eget lager. Slår man av lagret ser man exakt grundanimationen, och egna justeringar kan göras i ett annat lager.</p>
-  </div>
-  <div class="three">
-    <div class="verdict">
-      <span class="tag cs">Så fungerar det</span>
-      <h3>Inklistring blir skillnad</h3>
-      <p class="sub">När en pose klistras in med Cascadeurs egen import och ett lager är valt, sparas skillnaden mot grunden i lagret. Lagret av gav exakt grunden, 0,0 cm.</p>
-    </div>
-    <div class="verdict">
-      <span class="tag cs">Fällan</span>
-      <h3>Allt följer med</h3>
-      <p class="sub">Inklistringen gäller alla leder. Poserna byggs därför av grunden själv, exporterad ur Cascadeur, och bara det som ska rättas ändras. Annars följer till exempel mocapens fingrar med.</p>
-    </div>
-    <div class="verdict">
-      <span class="tag cs">Mjukt</span>
-      <h3>Inga hopp mellan nycklarna</h3>
-      <p class="sub">Nycklar i ett lager hoppar från början, och den sista ändringen gäller till klippets slut. Därför sätts nollnycklar runt varje ändring och alla övergångar ställs om till mjuka.</p>
-    </div>
-  </div>
-  <div class="chart-box">
-    <h3>Fingrarna i eget lager: var de går in i armstöden</h3>
-    <p class="sub">Skanning av alla bildrutor i Unreal. Röd markering betyder att en fingertopp är mer än 0,5 cm inne i fåtöljen.</p>
-    <div class="tl">
-      <div class="tl-row"><span>Före lagret</span><div class="tl-track">
-        <span class="tl-seg" style="left:32%;width:68%"></span></div><span class="tl-val">upp till 6,2 cm</span></div>
-      <div class="tl-row"><span>Med lagret</span><div class="tl-track">
-        <span class="tl-seg" style="left:32.7%;width:2.3%"></span></div><span class="tl-val">upp till 1,9 cm</span></div>
-      <div class="tl-axis"><span></span><div><span>0</span><span>100</span><span>200</span><span>300</span></div><span></span></div>
-    </div>
-  </div>
   <div class="bridge">
-    <div class="fact"><span class="big">69</span><span>nycklar i fingerlagret, valda så att fingrarna följer motorns uträkning inom 1,5° mellan nycklarna.</span></div>
-    <div class="fact"><span class="big">0,23 cm</span><span>som mest flyttar fingerlagret något annat än fingrarna. Kroppen ligger kvar.</span></div>
-  </div>
-  <p class="sub">Det som är kvar är sju bildrutor, 98–104, när händerna landar på armstöden. I kontaktmotorn gick fingrarna från 6,9 och 6,4 cm in till 0,3 och 0,8 cm, utan ryck.</p>
-</section>
-
-<section>
-  <div class="sec-head">
-    <div class="eyebrow">Arbetssättet · sensorn i Unreal</div>
-    <h2>En sensor som känner kontakten</h2>
-    <p class="sub">Stefans idé var en "igelkott" av strålar runt Lisa i Unreal. Den blev en sensor som mäter medan han posar i Cascadeur och ser resultatet via Live Link. Han ser prickarna, och Claude får samma siffror med bildrutans nummer.</p>
-  </div>
-  <div class="side">
-    <figure>
-      <img src="sensor.jpg" width="975" height="837" alt="Lisa på väg att sätta sig i den röda fåtöljen i Unreal. Röda prickar på armstödet där fingertopparna går in, en grön prick vid en fingertopp och gula prickar vid kängan.">
-      <figcaption>Unreal, bildruta 101. Röda prickar ritas på möbelns yta där huden går in, annars skulle möbeln dölja dem.</figcaption>
-    </figure>
-    <div class="stack">
-      <div class="dots"><span style="--c:var(--velvet)"><i></i>inne, mer än 0,5 cm</span><span style="--c:var(--ok)"><i></i>kontakt, ±0,5 cm</span><span style="--c:var(--bl)"><i></i>nära, högst 2 cm</span></div>
-      <div class="item"><b>250 punkter följer huden</b><span>Punkterna sitter på hud och kläder och följer hennes ben precis som huden gör, med samma vikter. Unreals Python kan inte läsa hudens punkter, så de räknas ut en gång per karaktär i Blender.</span></div>
-      <div class="item"><b>Två strålar per punkt</b><span>Unreals strålar ser bara ytor utifrån. En stråle går ut från huden och mäter glipan. En stråle går utifrån in mot huden: träffar den en yta på vägen är huden inne i möbeln. Golvet räknas direkt på höjden.</span></div>
-      <div class="item"><b>Hela klippet på 20 sekunder</b><span>Sensorn stegar igenom alla 301 bildrutor och ställer sedan tillbaka tidslinjen. En mätning tar 27 ms.</span></div>
-      <div class="item"><b>Kontrollerad mot Blender</b><span>Samma bildruta och samma punkter: lägena stämmer inom 0,1 cm och gliporna inom 0,24 cm i snitt. Alla 30 punkter nära stolen klassades lika, och inga falska larm.</span></div>
-    </div>
+    <div class="fact"><span class="big">2 cm</span><span>så långt gick fåtöljen att flytta innan händerna gled av armstöden. Gången behövde 10–15 cm. Fåtöljen står kvar och animationen anpassas.</span></div>
+    <div class="fact"><span class="big">0,09</span><span>cm per bildruta² som största ändring i flytten. Banan räknas för hela klippet på en gång, så höften rör sig lika mjukt som i originalet.</span></div>
   </div>
 </section>
 
 <section>
   <div class="sec-head">
-    <div class="eyebrow">Mätningar · version 10 och 11</div>
-    <h2>Så vet vi att det blev bättre</h2>
-    <p class="sub">Allt mäts innan någon tittar. Diagrammen nedan är riktiga värden ur klippet och visar hur fingrarna blev lugna i version 11.</p>
+    <div class="eyebrow">AIScen_1 · fingrarna i version 10 och 11</div>
+    <h2>Planera över tid, inte bildruta för bildruta</h2>
+    <p class="sub">Version 10 valde fingrarnas vinkel bildruta för bildruta, och de hoppade. Version 11 väljer över hela klippet med ett tak per bildruta. Samma lärdom gav senare gångvägen och utjämningen av rättningen.</p>
   </div>
-
   <div class="chart-box">
     <h3>Pekfingrets första led, vänster hand</h3>
     <p class="sub">Böjvinkel i grader, bildruta 60–200. Handen landar på armstödet kring bildruta 70 och vilar sedan.</p>
@@ -614,86 +814,19 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
       </svg>
     </div>
   </div>
-
-  <div class="chart-box">
-    <h3>Hopp: fingerleder som vrids mer än 6° på en bildruta</h3>
-    <p class="sub">Hela klippet, alla femton leder per hand. Mocapen själv är måttstocken.</p>
-    <div class="bars">
-      <div class="bar-row"><span>Mocapen</span><div class="bar-pair">
-        <div class="bar-wrap"><div class="bar" style="--c:var(--muted);width:4.5%"></div><span class="bar-val">vä 5</span></div>
-        <div class="bar-wrap"><div class="bar" style="--c:var(--muted);width:0.5%"></div><span class="bar-val">hö 0</span></div></div></div>
-      <div class="bar-row"><span>Version 10</span><div class="bar-pair">
-        <div class="bar-wrap"><div class="bar" style="--c:var(--velvet);width:100%"></div><span class="bar-val">vä 110</span></div>
-        <div class="bar-wrap"><div class="bar" style="--c:var(--velvet);width:70%"></div><span class="bar-val">hö 77</span></div></div></div>
-      <div class="bar-row"><span>Version 11</span><div class="bar-pair">
-        <div class="bar-wrap"><div class="bar" style="--c:var(--ue);width:15.5%"></div><span class="bar-val">vä 17</span></div>
-        <div class="bar-wrap"><div class="bar" style="--c:var(--ue);width:0.5%"></div><span class="bar-val">hö 0</span></div></div></div>
-    </div>
-  </div>
-
-  <div class="table-box">
-    <table>
-      <thead><tr><th>Mått</th><th>Version 9</th><th>Version 10</th><th>Version 11</th></tr></thead>
-      <tbody>
-        <tr><td>Handflatans glipa mot armstödet</td><td class="n">0,6–0,8 cm</td><td class="n">0,2–0,5 cm</td><td class="n best">0,2–0,5 cm</td></tr>
-        <tr><td>Fingrar in i armstödet när hon sitter</td><td class="n">högst 0,5 cm</td><td class="n">0,4 cm, en gång 1,9</td><td class="n best">högst 0,4 cm</td></tr>
-        <tr><td>Händerna står stilla (andel av kontakttiden)</td><td class="n">33–38 %</td><td class="n">53–60 %</td><td class="n">52–58 %</td></tr>
-        <tr><td>Fötterna står stilla</td><td class="n">56–58 %</td><td class="n">66–68 %</td><td class="n">62–66 %</td></tr>
-        <tr><td>Fingrarnas värsta ryck</td><td class="n">–</td><td class="n">101° / 113°</td><td class="n best">12° / 2°</td></tr>
-        <tr><td>Största fingerböj</td><td class="n">80°</td><td class="n">80°</td><td class="n best">30°</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p class="sub">I version 11 glider handen och foten mjukt mellan två vilolägen i stället för att hoppa. Därför står de still lite färre bildrutor, men medelfarten är densamma.</p>
 </section>
 
 <section>
   <div class="sec-head">
     <div class="eyebrow">Nytt klipp</div>
-    <h2>Så görs nästa animation</h2>
-    <p class="sub">Ordningen och reglerna ligger i skillen <code>animationsflode</code>, verktygen i <code>kontaktmotor</code>. Cascadeur ska ha sin skriptserver igång (Scripts → MCP → Start script server) och Unreal ska ha OmbraPodcast öppet med Live Link.</p>
+    <h2>Så startar du nästa animation</h2>
+    <p class="sub">Ordningen och reglerna ligger i skillen <code>animationsflode</code>, verktygen i <code>kontaktmotor</code>. Det finns också en instruktionsbok för AI-agenter, <code>ANIMATIONSKEDJAN_AI.md</code>, som beskriver hela kedjan så att en annan agent kan köra den.</p>
   </div>
-  <div class="say"><b>Enklast:</b> säg "kör flödet på AIScen_2". Claude gör stegen nedan, berättar vad varje steg gav och skannar klippet till sist.</div>
-  <ol class="steps">
-    <li class="step">
-      <div class="step-h"><span class="num">1</span><span class="tag cs">Cascadeur</span><b>Grunden</b></div>
-      <p class="sub">Video blir rörelse i Cascadeur. Stefan klickar Animation Unbaking en gång, och Claude lägger in möblerna på rätt plats. Före varje ändring sparas en kopia i mappen <code>gammalt</code>.</p>
-    </li>
-    <li class="step">
-      <div class="step-h"><span class="num">2</span><span class="tag ue">Unreal</span><b>Sanningen</b></div>
-      <p class="sub">Placerar kroppen, exporterar fåtöljen och spelar in alla ben i varje bildruta.</p>
-      <div class="code"><button class="copy" type="button">Kopiera</button><pre>&amp; "$env:USERPROFILE\.claude\skills\kontaktmotor\scripts\kontakt_forbered.ps1" -Klipp AIScen_2 -SittFran 99</pre></div>
-    </li>
-    <li class="step">
-      <div class="step-h"><span class="num">3</span><span class="tag bl">Blender</span><b>Kontaktmotorn, kroppen</b></div>
-      <p class="sub">Körs i en Blender i bakgrunden, cirka tre minuter. Fingrarna tas sist, i ett eget lager.</p>
-      <div class="code"><button class="copy" type="button">Kopiera</button><pre>lo = Losare2(Kontakt())
-lo.kor(kalla="UE_sanning", ny="kontakt",
-       steg=("vag", "kropp", "hander", "las", "underarm", "klarning"),
-       vikter=MAPP + r"\vikter.json")</pre></div>
-    </li>
-    <li class="step">
-      <div class="step-h"><span class="num">4</span><span class="tag cs">Cascadeur</span><b>Poserna in, fingrarna i eget lager</b></div>
-      <p class="sub">De rättade poserna klistras in på nycklarna. Sedan får fingrarna ett eget lager: grunden exporteras, motorn böjer fingrarna, nycklarna väljs och klistras in i lagret, och övergångarna görs mjuka.</p>
-      <div class="code"><button class="copy" type="button">Kopiera</button><pre>casc_backup.py      (kopia i gammalt\)
-casc_lager_ny.py    (nytt lager, blir aktivt)
-casc_export_bas.py  (grunden, lagren av)
-jobb_fingrar_lager.py + jobb_fingernycklar.py   (Blender)
-casc_klistra_nycklar.py med LAGER = 0
-casc_lager_mjuk.py  (mjuka övergångar)
-casc_lager_koll.py  (kroppen ska inte röras)</pre></div>
-    </li>
-    <li class="step">
-      <div class="step-h"><span class="num">5</span><span class="tag ue">Unreal</span><b>Skanna</b></div>
-      <p class="sub">Sensorn går igenom hela klippet och ställer tillbaka tidslinjen. Svaret är zon för zon med bildrutor, till exempel "fingrar inne 1,9 cm i bild 98–104".</p>
-      <div class="code"><button class="copy" type="button">Kopiera</button><pre>pod_sensor.json: {"lage": "skanna", "fran": 0, "till": 300, "steg": 1, "fortsatt_live": true}
-runpy_pod.ps1 -Script pod_sensor.py</pre></div>
-    </li>
-    <li class="step">
-      <div class="step-h"><span class="num">6</span><span class="tag cs">Cascadeur</span><b>Finjustera</b></div>
-      <p class="sub">Stefan justerar i ett eget lager och följer prickarna i Unreal. Säg "kolla bild 140" så läser Claude sensorn för just den bildrutan. Små detaljer görs sist i Unreal.</p>
-    </li>
-  </ol>
+  <div class="say"><b>Enklast:</b> säg "kör flödet på AIScen_3" och beskriv rörelsen. Claude gör alla steg, berättar vad varje steg gav och skannar till sist. Före start ska Cascadeurs skriptserver vara igång (Scripts → MCP → Start script server), och OmbraPodcast ska vara öppet i Unreal med AI-scenen.</div>
+  <div class="list2">
+    <div class="item"><b>Du klickar fyra gånger</b><span>Du godkänner det som laddas ner, kopplar bort Live Link innan en ny flik öppnas och startar Live Link på den nya fliken. Om Cascadeurs egen video-mocap används importerar du också filmen.</span></div>
+    <div class="item"><b>Du finjusterar</b><span>Gör dina ändringar i ett eget lager i Cascadeur och följ prickarna i Unreal. Säg "kolla bild 140", så läser Claude sensorn för just den bildrutan.</span></div>
+  </div>
 </section>
 
 <section>
@@ -702,18 +835,16 @@ runpy_pod.ps1 -Script pod_sensor.py</pre></div>
     <h2>Fällor vi redan har gått i</h2>
   </div>
   <div class="list2">
-    <div class="item"><b>Spara aldrig AS_Body_&lt;klipp&gt;</b><span>När källklippet sparas fylls retarget-posen i, och Lisas proportioner ändras. Frågar Unreal om att spara klippet: välj "Don't Save". Bakningen tömmer retarget-källan och skriver egna spår för 71 ben.</span></div>
-    <div class="item"><b>Lita inte på FBX-längder</b><span>FBX ger mocap-skelettets benlängder, 2–4 cm fel. Använd alltid bron.</span></div>
-    <div class="item"><b>Mät innan du gissar</b><span>Fingrarna hoppade inte på grund av Unreals fysik. De hoppade på grund av motorns egna val per bildruta. Ryckmåttet visade det på en gång.</span></div>
-    <div class="item"><b>Planera över tid</b><span>Ett val per bildruta slår om vid trösklar. Välj över hela klippet och sätt ett tak för ändring per bildruta. Samma sak gällde gångvägen: höften ryckte tills banan räknades för hela klippet på en gång.</span></div>
+    <div class="item"><b>Unbaking hittar på fingrar</b><span>Även med vilohand i källan lägger Animation Unbaking egna knutna fingrar på några nycklar. Ge alla basnycklar vilohanden efteråt och kontrollera böjningen.</span></div>
+    <div class="item"><b>Rättningen ska vara långsam</b><span>Motorns övergångar kan rycka där en kontakt börjar eller slutar. Jämna ut skillnaden mot grunden innan den blir ett lager.</span></div>
+    <div class="item"><b>Sista bildrutan visar viloposen</b><span>En sekvens på 300 bildrutor spelar 0–299. Bildruta 300 visar Lisa i A-pose, så den ersätts med 299.</span></div>
+    <div class="item"><b>Kläder har opålitliga normaler</b><span>Kjolen är en enkel yta. Händer 10 cm bort lästes som 15 cm inne. Avståndet till kläderna används därför utan tecken.</span></div>
+    <div class="item"><b>Varje flik har sin egen Live Link</b><span>Koppla bort Live Link innan en ny flik öppnas. Annars kan fel scen hamna i Unreal.</span></div>
+    <div class="item"><b>Spara aldrig AS_Body_&lt;klipp&gt;</b><span>När källklippet sparas fylls retarget-posen i, och Lisas proportioner ändras. Välj "Don't Save".</span></div>
+    <div class="item"><b>Lita inte på FBX-längder</b><span>FBX ger mocap-skelettets benlängder, 2–4 cm fel. Använd alltid sanningen och bron.</span></div>
     <div class="item"><b>Flytta inte möblerna</b><span>Fåtöljen gick bara att flytta cirka 2 cm innan sittandet blev fel. Scenen får vara som den är, och animationen anpassas.</span></div>
-    <div class="item"><b>Låt sittandet komma gradvis</b><span>Originalfötterna glider fram medan hon sjunker ner i stolen. När sittläget låstes direkt gled den rättade foten 7 cm bakåt och fram igen. Över två sekunder blev det 0,5 cm.</span></div>
-    <div class="item"><b>Unreals strålar är ensidiga</b><span>En stråle som börjar inne i en möbel ser ingenting av den. Den första sensorn trodde att en hand var 10 cm inne i armstödet, fast den svävade 3 cm ovanför.</span></div>
-    <div class="item"><b>Exakt kollision på kopian</b><span>Fåtöljen hade två grova skal som kollision, och en stråle mot sitsen träffade 106 cm i stället för 48,5. Kopian fick exakt kollision. Studiofåtöljen är orörd.</span></div>
-    <div class="item"><b>Allt följer med in i lagret</b><span>En inklistring gäller alla leder. Bygg poserna av grunden själv, annars kommer till exempel mocapens fingrar in i lagret.</span></div>
-    <div class="item"><b>Byt aldrig flik med Live Link på</b><span>Cascadeur skickar den flik som är öppen. Ett byte under arbetet skickade fel version till Unreal och stoppade strömmen.</span></div>
-    <div class="item"><b>Fingrarna kräver LOD 0</b><span>På lägre LOD hoppar Unreal över fingrarnas hjälpben. Inspelningen tvingar LOD 0.</span></div>
-    <div class="item"><b>Långa körningar i bakgrunden</b><span>Anrop till Blender och Cascadeur kan få timeout medan jobbet fortsätter. Kör i bakgrunden och följ resultatfilen eller loggen.</span></div>
+    <div class="item"><b>Unreals strålar är ensidiga</b><span>En stråle som börjar inne i en möbel ser ingenting av den. Sensorn använder därför två strålar per punkt.</span></div>
+    <div class="item"><b>Långa körningar i bakgrunden</b><span>Anrop till Blender och Cascadeur kan få timeout medan jobbet fortsätter. Följ resultatfilen eller loggen i stället för att skicka om.</span></div>
   </div>
 </section>
 
@@ -723,12 +854,10 @@ runpy_pod.ps1 -Script pod_sensor.py</pre></div>
     <h2>Kvar att göra</h2>
   </div>
   <div class="list2">
-    <div class="item"><b>Fingrarna när händerna landar</b><span>Bildruta 98–104: fingertopparna går 1,4–1,9 cm in i armstöden i sju bildrutor.</span></div>
-    <div class="item"><b>Sista bildrutan i Unreal</b><span>Sekvensen spelar bildruta 0–299, så klippets sista bildruta visas aldrig. Den förlängs en bildruta.</span></div>
-    <div class="item"><b>Kroppens rättning som lager</b><span>I AIScen_1 klistrades kroppens rättning in i grunden. Nästa gång ska den läggas i ett eget lager, så att den städade mocapen blir grunden. Inte testat ännu.</span></div>
-    <div class="item"><b>Video till rörelse i Cascadeur</b><span>Ny väg från och med nästa klipp. Vilken meny, om Indie räcker och hur fingrarna blir provas på första klippet.</span></div>
-    <div class="item"><b>Underarmarna svävar</b><span>Armstöden på 68 cm är låga för Lisas proportioner, så underarmarna vilar inte. Antingen höjs de på en kopia av fåtöljen, eller så får det vara.</span></div>
-    <div class="item"><b>Mara och soffan</b><span>Samma flöde ska fungera för Mara i <code>SM_Soffa_Gast</code>. Sensorn behöver Maras punkter och soffan exakt kollision. Inte testat ännu.</span></div>
+    <div class="item"><b>Snabbare lager</b><span>Klistra in hela lagret på en gång och mjuka det med ett kommando. Det sparar cirka 10 minuter per klipp.</span></div>
+    <div class="item"><b>Sensorn och kropp mot kropp</b><span>Sensorn känner möbler och golv men inte arm mot knä. Den kan lära sig det med täta punkter på låren och armbågarna.</span></div>
+    <div class="item"><b>Ansikte och slutrendering</b><span>Ansikte från rösten, små detaljer i Sequencer-lager och slutrendering för AIScen_2.</span></div>
+    <div class="item"><b>Mara och soffan</b><span>Samma kedja ska fungera för Mara i soffan. Sensorn behöver hennes punkter och soffan exakt kollision.</span></div>
   </div>
 </section>
 
@@ -741,21 +870,21 @@ runpy_pod.ps1 -Script pod_sensor.py</pre></div>
     <table>
       <thead><tr><th>Plats</th><th>Innehåll</th></tr></thead>
       <tbody>
-        <tr><td>~\.claude\skills\animationsflode\</td><td>Flödet steg för steg: ordningen, reglerna, lagren och sensorn.</td></tr>
-        <tr><td>~\.claude\skills\kontaktmotor\</td><td>Verktygen och mätningarna bakom varje steg (SKILL.md och alla skript nedan).</td></tr>
-        <tr><td>…\kontaktmotor\blender\</td><td>Motorn med gångvägen (<code>kontakt_motor</code>, <code>kontakt_losare2</code>), bron och scenbygget. I <code>till_cascadeur\</code> ligger jobben för Cascadeur och sensorns punkter.</td></tr>
-        <tr><td>…\kontaktmotor\cascadeur\</td><td>Inklistring av poser, lagren (<code>casc_lager_ny</code>, <code>casc_lager_mjuk</code>, <code>casc_lager_koll</code>), kopior, status och vilohanden.</td></tr>
-        <tr><td>…\kontaktmotor\unreal\</td><td>Unreal-skripten, bland annat sensorn <code>pod_sensor.py</code>. De körs från <code>OmbraPodcast\Saved\ClaudeScripts</code>.</td></tr>
-        <tr><td>…\kontaktmotor\scripts\</td><td><code>kontakt_forbered.ps1</code>, <code>kontakt_ue.ps1</code>, <code>jamfor.sh</code> och hjälparna för Unreal-konsolen.</td></tr>
-        <tr><td>I:\Verkstad\projekt\2026-10-02_lisa-mobler\kontakt\AIScen_1\</td><td>Första klippet: Blender-filen, vikterna och alla mätfiler.</td></tr>
-        <tr><td>I:\Ombra Media\Podcast\CascTest\AIScen_1\</td><td>Cascadeur-filen med grunden och fingerlagret, och kopiorna i <code>gammalt</code>.</td></tr>
-        <tr><td>I:\Ombra Media\Podcast\Mocap\</td><td>Jämförelsefilmerna, till exempel <code>AIScen_1_gangvag_fore_efter.mp4</code>.</td></tr>
+        <tr><td>~\.claude\skills\animationsflode\</td><td>Flödet steg för steg: ordningen, de hårda reglerna, lagren och sensorn.</td></tr>
+        <tr><td>~\.claude\skills\kontaktmotor\</td><td>Verktygen och mätningarna bakom varje steg, och den här sidan i <code>docs\</code>.</td></tr>
+        <tr><td>…\kontaktmotor\blender\</td><td>Motorn (<code>kontakt_motor</code>, <code>kontakt_losare2</code>, <code>kontakt_egen</code>), bron och scenbygget. I <code>till_cascadeur\</code> ligger jobben för superbildrutor, utjämning, lager och kontroll.</td></tr>
+        <tr><td>…\kontaktmotor\cascadeur\</td><td>Öppna flik, klistra in hela klipp och nycklar, lager, kopior, status och fönsterbilder.</td></tr>
+        <tr><td>…\kontaktmotor\unreal\</td><td>Unreal-skripten: sanning via Sequencer (<code>pod_truth_seq</code>), placering, drift, sensorn och rendering.</td></tr>
+        <tr><td>…\kontaktmotor\scripts\</td><td>Hjälparna för Unreal-konsolen och slingan för superbildrutor (<code>superramar_loop.ps1</code>).</td></tr>
+        <tr><td>I:\Verkstad\kedja\</td><td>AI-filmen: LTX-motorn startas och filmen görs (<code>ltx_starta.ps1</code>, <code>ltx_video.py</code>).</td></tr>
+        <tr><td>I:\Ombra Media\Podcast\CascTest\AIScen_2\</td><td>Arbetsfilen <code>Lisa_AIScen_2_v3.casc</code> (grund, kroppslager, fingerlager) och kopiorna i <code>gammalt</code>.</td></tr>
+        <tr><td>I:\Ombra Media\Podcast\Mocap\</td><td>Jämförelsefilmerna, till exempel <code>Jamforelse_AIScen_2_v3.mp4</code> och <code>Overlagg_AIScen_2_kedjorna.mp4</code>.</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 
-<footer>Byggd 2–3 oktober 2026. Version 13 lade till gångvägen, lagren i Cascadeur och sensorn i Unreal. Hela historien, med vad som provades och varför, står i OmbraPodcasts DEVLOG.</footer>
+<footer>Byggd 2–4 oktober 2026. Version 14 visar hela kedjan i ordning med tider. Den lade till Unreals mocap som standard, vilohanden i grunden, superbildrutor, passen fotankare och armbåge mot knä, utjämning och lager för både kropp och fingrar. Hela historien, med vad som provades och varför, står i OmbraPodcasts DEVLOG.</footer>
 
 </div>
 
