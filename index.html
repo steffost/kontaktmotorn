@@ -238,10 +238,11 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
   <div class="eyebrow">Ombra Podcast · animation · skills "animationsflode" och "kontaktmotor"</div>
   <h1>Kontaktmotorn</h1>
   <p class="lead">Från en AI-film till en färdig animation där Lisa sitter rätt i fåtöljen. Kedjan har femton steg i fyra program. Rumpan vilar på sitsen, händerna på armstöden, armbågarna på knäna, fingrarna följer kanten och fötterna står still.</p>
-  <p class="sub">Unreal tar fram rörelsen ur filmen. Cascadeur är verkstaden. En kontaktmotor i Blender räknar ut rättningarna i bakgrunden, och de läggs i egna lager i Cascadeur, så grunden alltid finns kvar. En sensor i Unreal går sist igenom hela klippet på 20 sekunder. Ett klipp tar i dag cirka 50 minuter maskintid och fyra klick.</p>
+  <p class="sub">Unreal tar fram rörelsen ur filmen. Cascadeur är verkstaden. En kontaktmotor i Blender räknar ut rättningarna i bakgrunden, och de läggs i egna lager i Cascadeur, så grunden alltid finns kvar. En sensor i Unreal går sist igenom hela klippet på 20 sekunder. Ett klipp tar i dag cirka 50 minuter maskintid och fyra klick. Sedan 7 oktober finns också en hylla med färdiga klipp som går samma väg på en kvart, och lager i Unreal där Stefan gör detaljerna.</p>
   <div class="chips">
-    <span class="chip v">Version 14</span>
-    <span class="chip">4 oktober 2026</span>
+    <span class="chip v">Version 15</span>
+    <span class="chip">7 oktober 2026</span>
+    <span class="chip">Nytt: hyllan, Control Rig-lager och armar som lager i Unreal</span>
     <span class="chip">Testad på AIScen_1 (gå fram och sätta sig) och AIScen_2 (armbågarna mot knäna)</span>
   </div>
   <figure>
@@ -818,6 +819,85 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
 
 <section>
   <div class="sec-head">
+    <div class="eyebrow">Nytt i v15 · hyllan</div>
+    <h2>Färdiga klipp går samma väg som filmen</h2>
+    <p class="sub">Filmen är huvudvägen. När mocapen inte räcker, eller tiden inte finns, tas rörelsen från en hylla: egna godkända klipp i banken, och gratis paket som Epics Game Animation Sample med cirka 500 städade klipp. Ett paketklipp får exakt samma städ som ett mocap-klipp och mäts med samma sensor. Flödet för alla projekt står i <code>I:\Verkstad\ANIMATIONSFLODE.md</code>.</p>
+  </div>
+  <div class="side">
+    <figure>
+      <img src="hylla.jpg" width="680" height="640" alt="Lisa sitter i den röda fåtöljen med händerna i knät, fötterna på mattan.">
+      <figcaption>Samplets sittande bänk-idle, retargetad till Lisa och körd genom kontaktmotorn. Bild 300 av 750 i studion.</figcaption>
+    </figure>
+    <div class="stack">
+      <ol class="chain">
+        <li class="step ue">
+          <div class="step-h"><span class="num">1</span><span class="tag ue">Unreal</span><b>Retarget</b><span class="tid">ca 1 min</span></div>
+          <p class="how">Epics egen retargetering från gubben till MetaHuman, i batch. Lisas kropp sätts som proportionskälla, så benen inte sträcks.</p>
+        </li>
+        <li class="step ue">
+          <div class="step-h"><span class="num">2</span><span class="tag ue">Unreal</span><b>Placering och sanning</b><span class="tid">ca 1 min</span></div>
+          <p class="how">Samma skript som för mocap: bäckenet 10 cm framför fåtöljens pivot, vänd som fåtöljen. Sedan sanningen via Sequencer, 751 nycklar på 52 sekunder.</p>
+        </li>
+        <li class="step bl">
+          <div class="step-h"><span class="num">3</span><span class="tag bl">Blender</span><b>Kontaktmotorn</b><span class="tid">ca 8 min</span></div>
+          <p class="how">Den direkta kedjan i en bakgrunds-Blender: bron, vilohand, sluten loop, passen, utjämning, mätning och FBX.</p>
+        </li>
+        <li class="step ue">
+          <div class="step-h"><span class="num">4</span><span class="tag ue">Unreal</span><b>Import, sekvens, sensor, bild</b><span class="tid">ca 2 min</span></div>
+          <p class="how">Klippet in, Lisa i fåtöljen i studion, skanning och en renderad bildruta. Sedan riggen och verktyget, se nästa avsnitt.</p>
+        </li>
+      </ol>
+    </div>
+  </div>
+  <div class="table-box">
+    <table>
+      <thead><tr><th>Zon, sensorn i studion</th><th>Rått paketklipp</th><th>Efter motorn</th></tr></thead>
+      <tbody>
+        <tr><td>Bakdel mot sitsen</td><td class="n">7,1 cm inne</td><td class="n best">0,07 cm luft</td></tr>
+        <tr><td>Lår mot sitsen</td><td class="n">7,5 cm inne</td><td class="n">3,7 cm inne, mjuk dyna som förut</td></tr>
+        <tr><td>Vänster fot mot golvet</td><td class="n">7,8 cm inne</td><td class="n best">0,2 cm luft</td></tr>
+        <tr><td>Höger fot</td><td class="n">2,2 cm inne</td><td class="n best">0,3 cm luft</td></tr>
+        <tr><td>Händer över armstöden</td><td class="n">9 cm</td><td class="n">13 cm, i knät</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="sub">Fötterna står helt still, loopskarven är 0,02 cm och rörelsen är lika mjuk som originalet. Händerna ligger i knät i bänkposen, 13 cm från armstöden, och motorn fångar bara inom 8 cm. Så det här blev en idle med händerna i knät, en annan än den med händerna på armstöden. Stefans dom: "väldigt bra grundarbete så jag kan lägga min tid på detaljerna".</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Nytt i v15 · lager i Unreal</div>
+    <h2>Grunden orörd, detaljerna i lager</h2>
+    <p class="sub">När grunden är mätt läggs MetaHumans egen Control Rig som lager ovanpå i Sequencer, och armar kan tas från ett annat klipp som additivt lager. Stefan gör det sista med lager och pickern i MetaHuman Animation Tool. Hur det går till, steg för steg: <a href="http://ombraprime.com/kontaktmotorn/lager/">Lager i Unreal</a>.</p>
+  </div>
+  <figure>
+    <img src="armlager.jpg" width="1372" height="640" alt="Två bilder av Lisa i fåtöljen. Till vänster vilar händerna i knät. Till höger är vänster hand lyft i en pratgest.">
+    <figcaption>Samma grund. Till vänster bara grunden. Till höger med armarna från AIScen 2 som additivt lager på rad 1. Säte och fötter läser exakt lika i sensorn, händerna lämnar knät från bild 20 till 290.</figcaption>
+  </figure>
+  <div class="three">
+    <div class="verdict pick">
+      <span class="tag ue">Control Rig</span>
+      <h3>Riggen som lager</h3>
+      <p class="sub">MetaHumans kroppsrigg, 162 kontroller med FK och IK, som lagrat Control Rig-spår på kroppen. Riggen vill ha benen i IK och löste knäna på nytt, upp till 14 grader fel. Med benen i FK återger en tom rigg grunden inom 0,03 grader.</p>
+      <span class="res yes">Mätt med export från Sequencer</span>
+    </div>
+    <div class="verdict pick">
+      <span class="tag ue">Additivt klipp</span>
+      <h3>Armar från ett annat klipp</h3>
+      <p class="sub">En kopia av källklippet där alla ben utom armkedjan fryses på bild 0, så deras additiva skillnad blir noll. Fingrarna fryses också, så vilohanden står kvar. Kopian läggs som sektion på rad 1 och kan viktas, kortas och flyttas.</p>
+      <span class="res yes">54 armben följer med, 288 ben frysta</span>
+    </div>
+    <div class="verdict pick">
+      <span class="tag ue">Verktyg</span>
+      <h3>MetaHuman Animation Tool</h3>
+      <p class="sub">Locodromes picker för kropp och ansikte, FK/IK-växling per kroppsdel, tween, pose-urklipp, spegling och snap till sockets. Rent Blueprint, hämtat från ett 5.7-projekt. Knapparna behöver motorns plugin CommonUI.</p>
+      <span class="res yes">Öppnas av kedjan när grunden är klar</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
     <div class="eyebrow">Nytt klipp</div>
     <h2>Så startar du nästa animation</h2>
     <p class="sub">Ordningen och reglerna ligger i skillen <code>animationsflode</code>, verktygen i <code>kontaktmotor</code>. Det finns också en instruktionsbok för AI-agenter, <code>ANIMATIONSKEDJAN_AI.md</code>, som beskriver hela kedjan så att en annan agent kan köra den.</p>
@@ -826,6 +906,7 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
   <div class="list2">
     <div class="item"><b>Du klickar fyra gånger</b><span>Du godkänner det som laddas ner, kopplar bort Live Link innan en ny flik öppnas och startar Live Link på den nya fliken. Om Cascadeurs egen video-mocap används importerar du också filmen.</span></div>
     <div class="item"><b>Du finjusterar</b><span>Gör dina ändringar i ett eget lager i Cascadeur och följ prickarna i Unreal. Säg "kolla bild 140", så läser Claude sensorn för just den bildrutan.</span></div>
+    <div class="item"><b>Från hyllan</b><span>Säg "ny grund från hyllan: &lt;klipp&gt;". Retarget, placering, sanning, kontaktmotor, import, sensor, rigg och verktyg kör i ett svep, cirka en kvart. Sedan gör du detaljerna i lager.</span></div>
   </div>
 </section>
 
@@ -845,6 +926,11 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
     <div class="item"><b>Flytta inte möblerna</b><span>Fåtöljen gick bara att flytta cirka 2 cm innan sittandet blev fel. Scenen får vara som den är, och animationen anpassas.</span></div>
     <div class="item"><b>Unreals strålar är ensidiga</b><span>En stråle som börjar inne i en möbel ser ingenting av den. Sensorn använder därför två strålar per punkt.</span></div>
     <div class="item"><b>Långa körningar i bakgrunden</b><span>Anrop till Blender och Cascadeur kan få timeout medan jobbet fortsätter. Följ resultatfilen eller loggen i stället för att skicka om.</span></div>
+    <div class="item"><b>Riggen löser benen på nytt</b><span>MetaHuman-riggens ben står i IK som standard och knäna avvek upp till 14 grader från grunden. Benen sätts i FK när riggen läggs på. Armarna är FK från början.</span></div>
+    <div class="item"><b>Samma namn i samma namnrymd</b><span>Blender-jobbet exec:ar alla filer i en namnrymd. En flagga som hette FINGRAR skrev över lösarens lista med fingernamn, och motorn kraschade. Flaggan heter nu FINGRAR_PA.</span></div>
+    <div class="item"><b>Ingen kontakt är också ett fall</b><span>Mätningen av glidning delade med noll när händerna aldrig nådde armstöden. Nu ger den nollor och antal bildrutor, och scenen sparas direkt efter motorn.</span></div>
+    <div class="item"><b>Additivt kommer från klippet</b><span>En sektion i Sequencer behöver ingen blendtyp; den blandas additivt så fort tillgången är additiv. Att sätta blendtyp på sektionen biter inte från Python.</span></div>
+    <div class="item"><b>Verktyget behöver CommonUI</b><span>Pickerns knappar anropar en funktion ur motorns plugin CommonUI. Utan det kompilerar de inte, och en varningsruta dyker upp vid varje uppspelning.</span></div>
   </div>
 </section>
 
@@ -854,10 +940,12 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
     <h2>Kvar att göra</h2>
   </div>
   <div class="list2">
-    <div class="item"><b>Snabbare lager</b><span>Klistra in hela lagret på en gång och mjuka det med ett kommando. Det sparar cirka 10 minuter per klipp.</span></div>
+    <div class="item"><b>Baka lager till banken</b><span>Grund, armlager och Stefans lager ska bli ett klipp i banken med en rad i bank.json. Exporten från Sequencer finns redan.</span></div>
+    <div class="item"><b>Fler källor för armar</b><span>Mixamo har gratis sittande pratgester. Samma väg: additiv kopia med bara armarna.</span></div>
+    <div class="item"><b>Kontaktrigg i post-process</b><span>Fot-IK mot golv och hand-IK mot armstöd på alla klipp, även Live Link, som säkerhetsnät och grön/röd visning.</span></div>
     <div class="item"><b>Sensorn och kropp mot kropp</b><span>Sensorn känner möbler och golv men inte arm mot knä. Den kan lära sig det med täta punkter på låren och armbågarna.</span></div>
-    <div class="item"><b>Ansikte och slutrendering</b><span>Ansikte från rösten, små detaljer i Sequencer-lager och slutrendering för AIScen_2.</span></div>
-    <div class="item"><b>Mara och soffan</b><span>Samma kedja ska fungera för Mara i soffan. Sensorn behöver hennes punkter och soffan exakt kollision.</span></div>
+    <div class="item"><b>Ansikte och slutrendering</b><span>Ansikte från rösten, små detaljer i Sequencer-lager och slutrendering.</span></div>
+    <div class="item"><b>Mara och soffan</b><span>Samma kedja ska fungera för Mara i soffan. Riggen får andra sockets, sensorn hennes punkter och soffan exakt kollision.</span></div>
   </div>
 </section>
 
@@ -879,12 +967,16 @@ footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--li
         <tr><td>I:\Verkstad\kedja\</td><td>AI-filmen: LTX-motorn startas och filmen görs (<code>ltx_starta.ps1</code>, <code>ltx_video.py</code>).</td></tr>
         <tr><td>I:\Ombra Media\Podcast\CascTest\AIScen_2\</td><td>Arbetsfilen <code>Lisa_AIScen_2_v3.casc</code> (grund, kroppslager, fingerlager) och kopiorna i <code>gammalt</code>.</td></tr>
         <tr><td>I:\Ombra Media\Podcast\Mocap\</td><td>Jämförelsefilmerna, till exempel <code>Jamforelse_AIScen_2_v3.mp4</code> och <code>Overlagg_AIScen_2_kedjorna.mp4</code>.</td></tr>
+        <tr><td>OmbraPodcast\Saved\ClaudeScripts\pod_paket_*.py</td><td>Hyllan: retarget, placering, sekvens, rigg som lager, ben i FK, trohetskontroll och armar som additivt lager.</td></tr>
+        <tr><td>/Game/Podcast/Library/Paket/</td><td>Retargetade paketklipp, det färdiga <code>AS_Paket_bench_kontakt1</code>, armlagret och testsekvensen <code>LS_Paket_Test</code>.</td></tr>
+        <tr><td>I:\Unreal Engine\Projects\GameAnimationSample\</td><td>Epics Game Animation Sample som källa. Walk, Idle, Poses, LookAtPOI och Bench är kopierade till OmbraPodcast.</td></tr>
+        <tr><td>I:\Verkstad\ANIMATIONSFLODE.md</td><td>Flödet för alla projekt: film, mocap, städ, bank, med grindar och fallback till hyllan.</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 
-<footer>Byggd 2–4 oktober 2026. Version 14 visar hela kedjan i ordning med tider. Den lade till Unreals mocap som standard, vilohanden i grunden, superbildrutor, passen fotankare och armbåge mot knä, utjämning och lager för både kropp och fingrar. Hela historien, med vad som provades och varför, står i OmbraPodcasts DEVLOG.</footer>
+<footer>Byggd 2–7 oktober 2026. Version 15 lade till hyllan, där färdiga paketklipp går samma väg som filmen, Control Rig som lager i Unreal, armar från ett annat klipp som additivt lager, MetaHuman Animation Tool och flödet för alla projekt. Version 14 visade hela kedjan i ordning med tider. Hela historien, med vad som provades och varför, står i OmbraPodcasts DEVLOG.</footer>
 
 </div>
 
